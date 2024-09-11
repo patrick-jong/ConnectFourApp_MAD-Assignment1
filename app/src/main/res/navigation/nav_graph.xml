@@ -9,7 +9,7 @@
         android:id="@+id/mainMenuFragment"
         android:name="com.example.mad_assignment1.ui.MainMenuFragment"
         android:label="fragment_main_menu"
-        tools:layout="@layout/fragment_main_menu" >
+        tools:layout="@layout/fragment_main_menu">
         <action
             android:id="@+id/action_mainMenuFragment_to_gameFragment2"
             app:destination="@id/gameFragment" />

@@ -21,15 +21,17 @@ public class MainMenuFragment extends Fragment {
 
         Button btnTwoPlayer = view.findViewById(R.id.btn_two_player);
         Button btnAiMode = view.findViewById(R.id.btn_ai_mode);
-        Button btnSettings = view.findViewById(R.id.btn_settings);
+        Button btnStatistics = view.findViewById(R.id.btn_statistics);
         Button btnProfile = view.findViewById(R.id.btn_profile);
+        Button btnSettings = view.findViewById(R.id.btn_settings);
 
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
 
-        btnTwoPlayer.setOnClickListener(v -> navController.navigate(R.id.action_mainMenu_to_game));
-        btnAiMode.setOnClickListener(v -> navController.navigate(R.id.action_mainMenu_to_game)); // Set different argument for AI mode
-        btnSettings.setOnClickListener(v -> navController.navigate(R.id.action_mainMenu_to_settings));
-        btnProfile.setOnClickListener(v -> navController.navigate(R.id.action_mainMenu_to_profile));
+        btnTwoPlayer.setOnClickListener(v -> navController.navigate(R.id.action_mainMenuFragment_to_gameFragment2)); //TODO: not 2?
+        btnAiMode.setOnClickListener(v -> navController.navigate(R.id.action_mainMenuFragment_to_gameFragment2)); // TODO: Set different argument for AI mode
+        btnStatistics.setOnClickListener(v -> navController.navigate(R.id.action_mainMenuFragment_to_statisticsFragment));
+        btnProfile.setOnClickListener(v -> navController.navigate(R.id.action_mainMenuFragment_to_profileFragment));
+        btnSettings.setOnClickListener(v -> navController.navigate(R.id.action_mainMenuFragment_to_settingsFragment));
 
         return view;
     }
