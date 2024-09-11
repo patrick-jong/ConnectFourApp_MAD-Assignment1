@@ -1,0 +1,60 @@
+<!-- res/layout/fragment_settings.xml -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.SettingsFragment">
+
+    <TextView
+        android:id="@+id/settings_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:textSize="24sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+    <RadioGroup
+        android:id="@+id/grid_size_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/settings_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp">
+
+        <RadioButton
+            android:id="@+id/rb_standard_grid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Standard (7x6)"/>
+
+        <RadioButton
+            android:id="@+id/rb_small_grid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Small (6x5)"/>
+
+        <RadioButton
+            android:id="@+id/rb_large_grid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Large (8x7)"/>
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btn_save_settings"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        app:layout_constraintTop_toBottomOf="@+id/grid_size_group"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

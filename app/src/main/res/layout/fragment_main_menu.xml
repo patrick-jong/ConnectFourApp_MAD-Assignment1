@@ -1,0 +1,76 @@
+<!-- res/layout/fragment_main_menu.xml -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.MainMenuFragment">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Connect Four"
+        android:textSize="24sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp"/>
+
+    <Button
+        android:id="@+id/btn_two_player"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="2-Player Mode"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="24dp"/>
+
+    <Button
+        android:id="@+id/btn_ai_mode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="AI Mode"
+        app:layout_constraintTop_toBottomOf="@+id/btn_two_player"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/btn_profile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Profile"
+        app:layout_constraintTop_toBottomOf="@+id/btn_ai_mode"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/btn_statistics"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Statistics"
+        app:layout_constraintTop_toBottomOf="@+id/btn_profile"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/btn_settings"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        app:layout_constraintTop_toBottomOf="@+id/btn_statistics"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.8"
+        android:layout_marginTop="16dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
