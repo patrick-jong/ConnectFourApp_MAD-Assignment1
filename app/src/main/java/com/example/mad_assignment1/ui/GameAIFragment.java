@@ -5,23 +5,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+
 import com.example.mad_assignment1.ConnectFourViewModel;
 import com.example.mad_assignment1.R;
 
 import java.util.Arrays;
 
-public class GameFragment extends Fragment {
+public class GameAIFragment extends Fragment {
     private GridView gameGrid;
     private ArrayAdapter<Integer> gridAdapter;
     private TextView playerTurnIndicator;
@@ -34,15 +36,14 @@ public class GameFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_game, container, false);
-
-        // Use ViewModelProvider with requireActivity() to scope the ViewModel to the activity
-        connectFourViewModel = new ViewModelProvider(requireActivity()).get(ConnectFourViewModel.class);
-
+        View view = inflater.inflate(R.layout.fragment_ai_game, container, false);
         playerTurnIndicator = view.findViewById(R.id.player_turn_indicator);
         gameGrid = view.findViewById(R.id.game_grid);
         btnBack = view.findViewById(R.id.btn_back);
         btnReset = view.findViewById(R.id.btn_reset);
+
+        // Initialize ViewModel
+        connectFourViewModel = new ViewModelProvider(this).get(ConnectFourViewModel.class);
 
         initialiseGrid();
 
@@ -128,4 +129,5 @@ public class GameFragment extends Fragment {
         }
         gridAdapter.notifyDataSetChanged();
     }
+
 }
