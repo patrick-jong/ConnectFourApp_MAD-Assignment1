@@ -13,17 +13,45 @@
         android:layout_height="wrap_content"
         android:text="Connect Four"
         android:textSize="24sp"
+        android:textColor="@color/pastel_green_dark"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="32dp"/>
+
+    <!-- User Section with Icon and Username -->
+    <LinearLayout
+        android:id="@+id/user_info_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp">
+
+        <ImageView
+            android:id="@+id/user_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/avatar1"
+        android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textSize="18dp" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_two_player"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="2-Player Mode"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="@+id/user_info_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.8"

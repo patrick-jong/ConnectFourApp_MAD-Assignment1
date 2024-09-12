@@ -1,5 +1,6 @@
 package com.example.mad_assignment1.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.mad_assignment1.R;
 import com.example.mad_assignment1.profile.AvatarAdapter;
@@ -20,6 +23,7 @@ public class ProfileFragment extends Fragment {
     private RecyclerView avatarRecyclerView;
     private Button saveProfileButton;
     private UserProfile userProfile;
+    private Button btnBack;
 
     @Nullable
     @Override
@@ -29,20 +33,27 @@ public class ProfileFragment extends Fragment {
         playerNameInput = view.findViewById(R.id.et_player_name);
         avatarRecyclerView = view.findViewById(R.id.avatar_recycler_view);
         saveProfileButton = view.findViewById(R.id.btn_save_profile);
+        btnBack = view.findViewById(R.id.btn_back);
 
         // Initialize profile and adapter
         userProfile = new UserProfile();
         AvatarAdapter avatarAdapter = new AvatarAdapter(getContext(), userProfile.getAvailableAvatars());
         avatarRecyclerView.setAdapter(avatarAdapter);
 
-        saveProfileButton.setOnClickListener(v -> saveProfile());
+        // Safe Profile Button
+        saveProfileButton.setOnClickListener(v -> {
+            // Save user profile logic
+            userProfile.setName(playerNameInput.getText().toString());
+            // TODO: Save avatar selection, etc.
+        });
+
+        // Back button
+        btnBack.setOnClickListener(v -> {
+            NavController navController = NavHostFragment.findNavController(this);
+            navController.navigate(R.id.action_gameFragment_to_mainMenuFragment);
+        });
 
         return view;
     }
 
-    private void saveProfile() {
-        // Save user profile logic
-        userProfile.setName(playerNameInput.getText().toString());
-        // Save avatar selection, etc.
-    }
 }

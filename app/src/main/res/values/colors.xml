@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Standard Colours -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Pastel Green Theme -->
+    <color name="pastel_green_light">#A8D5BA</color>
+    <color name="pastel_green_dark">#6C9E76</color>
+    <color name="pastel_green_accent">#88B687</color>
+
+    <!-- Grey Theme -->
+    <color name="grey_light">#E0E0E0</color>
+    <color name="grey_dark">#616161</color>
+    <color name="grey_accent">#9E9E9E</color>
+
+    <!-- Text Colors -->
+    <color name="text_color_dark">#333333</color>
+    <color name="text_color_light">#FFFFFF</color>
 </resources>

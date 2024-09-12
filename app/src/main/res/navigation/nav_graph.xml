@@ -11,7 +11,7 @@
         android:label="fragment_main_menu"
         tools:layout="@layout/fragment_main_menu">
         <action
-            android:id="@+id/action_mainMenuFragment_to_gameFragment2"
+            android:id="@+id/action_mainMenuFragment_to_gameFragment"
             app:destination="@id/gameFragment" />
         <action
             android:id="@+id/action_mainMenuFragment_to_profileFragment"
@@ -27,20 +27,36 @@
         android:id="@+id/gameFragment"
         android:name="com.example.mad_assignment1.ui.GameFragment"
         android:label="fragment_game"
-        tools:layout="@layout/fragment_game" />
+        tools:layout="@layout/fragment_game" >
+        <action
+            android:id="@+id/action_gameFragment_to_mainMenuFragment"
+            app:destination="@id/mainMenuFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.mad_assignment1.ui.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_mainMenuFragment"
+            app:destination="@id/mainMenuFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.mad_assignment1.ui.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_mainMenuFragment"
+            app:destination="@id/mainMenuFragment" />
+    </fragment>
     <fragment
         android:id="@+id/statisticsFragment"
         android:name="com.example.mad_assignment1.ui.StatisticsFragment"
         android:label="fragment_statistics"
-        tools:layout="@layout/fragment_statistics" />
+        tools:layout="@layout/fragment_statistics" >
+        <action
+            android:id="@+id/action_statisticsFragment_to_mainMenuFragment"
+            app:destination="@id/mainMenuFragment" />
+    </fragment>
 </navigation>

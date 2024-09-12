@@ -9,12 +9,16 @@ import android.widget.RadioGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+
 import com.example.mad_assignment1.R;
 
 public class SettingsFragment extends Fragment {
 
     private RadioGroup gridSizeGroup;
     private Button saveSettingsButton;
+    private Button btnBack;
 
     @Nullable
     @Override
@@ -23,13 +27,19 @@ public class SettingsFragment extends Fragment {
 
         gridSizeGroup = view.findViewById(R.id.grid_size_group);
         saveSettingsButton = view.findViewById(R.id.btn_save_settings);
+        btnBack = view.findViewById(R.id.btn_back);
 
-        saveSettingsButton.setOnClickListener(v -> saveSettings());
+        saveSettingsButton.setOnClickListener(v -> {
+            //TODO: Implement setting save logic
+        });
+
+        // Back button
+        btnBack.setOnClickListener(v -> {
+            NavController navController = NavHostFragment.findNavController(this);
+            navController.navigate(R.id.action_gameFragment_to_mainMenuFragment);
+        });
 
         return view;
     }
 
-    private void saveSettings() {
-        // Implement settings save logic
-    }
 }

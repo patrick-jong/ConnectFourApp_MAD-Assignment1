@@ -7,6 +7,16 @@
     android:layout_height="match_parent"
     tools:context=".ui.GameFragment">
 
+    <Button
+        android:id="@+id/btn_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="8dp"/>
+
     <TextView
         android:id="@+id/player_turn_indicator"
         android:layout_width="wrap_content"
@@ -24,6 +34,8 @@
         android:layout_height="0dp"
         android:layout_margin="30dp"
         android:numColumns="7"
+        android:horizontalSpacing="4dp"
+        android:verticalSpacing="4dp"
         app:layout_constraintBottom_toTopOf="@+id/game_controls"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +44,7 @@
 
     <LinearLayout
         android:id="@+id/game_controls"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -40,19 +52,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginBottom="16dp">
 
+        <!-- UNDO BUTTON (Removed)
         <Button
             android:id="@+id/btn_undo"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Undo"
-            app:layout_constraintHorizontal_bias="0.1"
-            app:layout_constraintWidth_percent="0.5"/>
+            android:text="Undo" /> Add space to the right of Undo button -->
 
         <Button
             android:id="@+id/btn_reset"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:text="Reset" />
+            android:text="Reset" /> <!-- Add space to the left of Reset button -->
 
     </LinearLayout>
 
