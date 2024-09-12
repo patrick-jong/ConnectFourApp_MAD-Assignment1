@@ -105,8 +105,15 @@ public class GameFragment extends Fragment {
             int column = position % connectFourViewModel.getConnectFourGame().getColumns(); // Calculate column from grid position
             if (connectFourViewModel.getConnectFourGame().makeMove(column)) {
                 updateUI(); // Update UI after a successful move
-                if (!connectFourViewModel.getConnectFourGame().isGameActive()) {
-                    playerTurnIndicator.setText(connectFourViewModel.getConnectFourGame().getCurrentPlayer() + " wins!");
+
+                if(connectFourViewModel.getConnectFourGame().isDraw()) {
+                    playerTurnIndicator.setTypeface(null, android.graphics.Typeface.BOLD);
+                    playerTurnIndicator.setTextColor(getResources().getColor(R.color.pastel_green_dark));
+                    playerTurnIndicator.setText("It's a draw :(");
+                } else if (!connectFourViewModel.getConnectFourGame().isGameActive()) {
+                    playerTurnIndicator.setTypeface(null, android.graphics.Typeface.BOLD);
+                    playerTurnIndicator.setTextColor(getResources().getColor(R.color.pastel_green_dark));
+                    playerTurnIndicator.setText(connectFourViewModel.getConnectFourGame().getCurrentPlayer() + " wins !!");
                 }
             } else {
                 Toast.makeText(getContext(), "Invalid move. Try a different column.", Toast.LENGTH_SHORT).show();
@@ -122,4 +129,5 @@ public class GameFragment extends Fragment {
         }
         gridAdapter.notifyDataSetChanged();
     }
+
 }

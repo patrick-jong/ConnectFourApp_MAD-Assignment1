@@ -43,8 +43,13 @@ public class ConnectFourGame {
     }
 
     private void switchPlayer() {
-        currentPlayer = currentPlayer.equals("Player 1") ? "Player 2" : "Player 1";
+        if (currentPlayer.equals("Player 1")) {
+            currentPlayer = "Player 2";
+        } else {
+            currentPlayer = "Player 1";
+        }
     }
+
 
     private boolean checkWin(int row, int column) {
         return (checkDirection(row, column, 0, 1) ||  // Horizontal
@@ -78,6 +83,18 @@ public class ConnectFourGame {
         }
 
         return count;
+    }
+
+    // Method to check if the game is a draw
+    public boolean isDraw() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (board[i][j].isEmpty()) {
+                    return false;  // Found an empty cell, so it's not a draw
+                }
+            }
+        }
+        return true;  // No empty cells found, it's a draw
     }
 
     public int getRows() {
