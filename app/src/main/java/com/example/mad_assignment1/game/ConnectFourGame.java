@@ -5,6 +5,7 @@ public class ConnectFourGame {
     private int columns = 7;
     private String[][] board;
     private String currentPlayer;
+    private String currentPlayer2;
     private boolean gameActive;
 
     public ConnectFourGame() {

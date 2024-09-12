@@ -5,21 +5,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.GridView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-
-import com.example.mad_assignment1.ConnectFourViewModel;
+import com.example.mad_assignment1.livemodel.ConnectFourViewModel;
 import com.example.mad_assignment1.R;
+import com.example.mad_assignment1.game.GameAI;
+import com.example.mad_assignment1.livemodel.UserProfileViewModel;
 
 import java.util.Arrays;
 
@@ -30,26 +30,30 @@ public class GameAIFragment extends Fragment {
     private Button btnBack;
     private Button btnReset;
 
-    // Use ViewModel to hold game state
+    // ViewModel for managing game state
     private ConnectFourViewModel connectFourViewModel;
+    private UserProfileViewModel userProfileViewModel;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ai_game, container, false);
+
+        // Use ViewModelProvider with requireActivity() to scope the ViewModel to the activity
+        connectFourViewModel = new ViewModelProvider(requireActivity()).get(ConnectFourViewModel.class);
+
         playerTurnIndicator = view.findViewById(R.id.player_turn_indicator);
         gameGrid = view.findViewById(R.id.game_grid);
         btnBack = view.findViewById(R.id.btn_back);
         btnReset = view.findViewById(R.id.btn_reset);
 
-        // Initialize ViewModel
-        connectFourViewModel = new ViewModelProvider(this).get(ConnectFourViewModel.class);
-
+        playerTurnIndicator.setText(userProfileViewModel.getUsername());
         initialiseGrid();
 
         btnBack.setOnClickListener(v -> {
             NavController navController = NavHostFragment.findNavController(this);
-            navController.navigate(R.id.action_gameFragment_to_mainMenuFragment);
+            navController.navigate(R.id.action_gameAIFragment_to_mainMenuFragment);
         });
 
         btnReset.setOnClickListener(v -> {
@@ -82,10 +86,10 @@ public class GameAIFragment extends Fragment {
                 int col = position % connectFourViewModel.getConnectFourGame().getColumns();
                 String disc = connectFourViewModel.getConnectFourGame().getBoard()[row][col];
 
-                if (disc.equals("Player 1")) {
+                if (disc.equals("userProfileViewModel.getUsername()")) {
                     imageView.setImageResource(R.drawable.red_disc);  // Set Player 1's disc
-                } else if (disc.equals("Player 2")) {
-                    imageView.setImageResource(R.drawable.yellow_disc);  // Set Player 2's disc
+                } else if (disc.equals("AI")) {
+                    imageView.setImageResource(R.drawable.yellow_disc);  // Set AI's disc
                 } else {
                     imageView.setImageResource(R.drawable.empty_disc);  // Set empty spot
                 }
@@ -104,16 +108,32 @@ public class GameAIFragment extends Fragment {
 
             int column = position % connectFourViewModel.getConnectFourGame().getColumns(); // Calculate column from grid position
             if (connectFourViewModel.getConnectFourGame().makeMove(column)) {
-                updateUI(); // Update UI after a successful move
+                updateUI(); // Update UI after Player 1's move
 
-                if(connectFourViewModel.getConnectFourGame().isDraw()) {
+                // Check for win or draw after Player 1's move
+                if (connectFourViewModel.getConnectFourGame().isDraw()) {
                     playerTurnIndicator.setTypeface(null, android.graphics.Typeface.BOLD);
                     playerTurnIndicator.setTextColor(getResources().getColor(R.color.pastel_green_dark));
                     playerTurnIndicator.setText("It's a draw :(");
                 } else if (!connectFourViewModel.getConnectFourGame().isGameActive()) {
                     playerTurnIndicator.setTypeface(null, android.graphics.Typeface.BOLD);
                     playerTurnIndicator.setTextColor(getResources().getColor(R.color.pastel_green_dark));
-                    playerTurnIndicator.setText(connectFourViewModel.getConnectFourGame().getCurrentPlayer() + " wins !!");
+                    playerTurnIndicator.setText("Player 1 wins !!");
+                } else {
+                    // Make AI move after Player 1's move
+                    ((GameAI) connectFourViewModel.getConnectFourGame()).makeAIMove();
+                    updateUI();
+
+                    // Check for win or draw after AI's move
+                    if (connectFourViewModel.getConnectFourGame().isDraw()) {
+                        playerTurnIndicator.setTypeface(null, android.graphics.Typeface.BOLD);
+                        playerTurnIndicator.setTextColor(getResources().getColor(R.color.pastel_green_dark));
+                        playerTurnIndicator.setText("It's a draw :(");
+                    } else if (!connectFourViewModel.getConnectFourGame().isGameActive()) {
+                        playerTurnIndicator.setTypeface(null, android.graphics.Typeface.BOLD);
+                        playerTurnIndicator.setTextColor(getResources().getColor(R.color.pastel_green_dark));
+                        playerTurnIndicator.setText("AI wins !!");
+                    }
                 }
             } else {
                 Toast.makeText(getContext(), "Invalid move. Try a different column.", Toast.LENGTH_SHORT).show();
@@ -129,5 +149,4 @@ public class GameAIFragment extends Fragment {
         }
         gridAdapter.notifyDataSetChanged();
     }
-
 }

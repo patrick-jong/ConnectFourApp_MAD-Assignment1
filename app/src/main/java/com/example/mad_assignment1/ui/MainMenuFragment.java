@@ -5,20 +5,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import com.example.mad_assignment1.R;
+import com.example.mad_assignment1.livemodel.UserProfileViewModel;
 
 public class MainMenuFragment extends Fragment {
+    private UserProfileViewModel userProfileViewModel;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Loading main fragment
         View view = inflater.inflate(R.layout.fragment_main_menu, container, false);
+
+        // Setting username (to be changed in settings)
+        userProfileViewModel = new ViewModelProvider(requireActivity()).get(UserProfileViewModel.class);
+        userProfileViewModel.setUsername("PlayerOne");
+        TextView usernameDisplay = view.findViewById(R.id.username);
+        usernameDisplay.setText(userProfileViewModel.getUsername());
 
         // Buttons
         Button btnTwoPlayer = view.findViewById(R.id.btn_two_player);
@@ -32,7 +44,7 @@ public class MainMenuFragment extends Fragment {
 
         // Buttons loading up the respective fragments
         btnTwoPlayer.setOnClickListener(v -> navController.navigate(R.id.action_mainMenuFragment_to_gameFragment)); //TODO: not 2?
-        btnAiMode.setOnClickListener(v -> navController.navigate(R.id.action_mainMenuFragment_to_gameFragment)); // TODO: Set different argument for AI mode
+        btnAiMode.setOnClickListener(v -> navController.navigate(R.id.action_mainMenuFragment_to_gameAIFragment)); // TODO: Set different argument for AI mode
         btnStatistics.setOnClickListener(v -> navController.navigate(R.id.action_mainMenuFragment_to_statisticsFragment));
         btnProfile.setOnClickListener(v -> navController.navigate(R.id.action_mainMenuFragment_to_profileFragment));
         btnSettings.setOnClickListener(v -> navController.navigate(R.id.action_mainMenuFragment_to_settingsFragment));

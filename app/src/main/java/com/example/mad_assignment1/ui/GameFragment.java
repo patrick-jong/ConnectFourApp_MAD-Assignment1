@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import com.example.mad_assignment1.ConnectFourViewModel;
+import com.example.mad_assignment1.livemodel.ConnectFourViewModel;
 import com.example.mad_assignment1.R;
 
 import java.util.Arrays;
