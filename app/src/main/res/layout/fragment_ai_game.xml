@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!-- res/layout/fragment_ai_game.xml -->
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -22,7 +21,7 @@
         android:id="@+id/player_turn_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Username's Turn"
+        android:text="Guest's Turn"
         android:textSize="18sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +36,7 @@
         android:numColumns="7"
         android:horizontalSpacing="4dp"
         android:verticalSpacing="4dp"
-        app:layout_constraintBottom_toTopOf="@+id/game_controls"
+        app:layout_constraintBottom_toTopOf="@+id/game_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/player_turn_indicator"
@@ -66,6 +65,44 @@
             android:layout_height="wrap_content"
             android:text="Reset" /> <!-- Add space to the left of Reset button -->
 
+    </LinearLayout>
+
+    <!-- New TextViews for displaying number of moves and moves left -->
+    <LinearLayout
+        android:id="@+id/game_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/game_controls"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/player1_moves"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your Moves: 0"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"/>
+
+        <TextView
+            android:id="@+id/player2_moves"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AI's Moves: 0"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="16dp"/>
+
+        <TextView
+            android:id="@+id/moves_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Moves Left: 0"
+            android:textSize="16sp"
+            android:layout_marginStart="16dp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

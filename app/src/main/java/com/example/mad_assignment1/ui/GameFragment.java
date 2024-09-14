@@ -37,24 +37,48 @@ public class GameFragment extends Fragment {
     private UserProfile player1;
     private UserProfile player2;
     private UserProfile currentPlayer;
+    private TextView player1MovesView;
+    private TextView player2MovesView;
+    private TextView movesLeftView;
 
     private boolean gameActive;
-
     private GameViewModel gameViewModel;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_game, container, false);
+
         playerTurnIndicator = view.findViewById(R.id.player_turn_indicator);
         gameGrid = view.findViewById(R.id.game_grid);
         btnBack = view.findViewById(R.id.btn_back);
         btnReset = view.findViewById(R.id.btn_reset);
-
-        gameViewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
+        player1MovesView = view.findViewById(R.id.player1_moves);
+        player2MovesView = view.findViewById(R.id.player2_moves);
+        movesLeftView = view.findViewById(R.id.moves_left);
 
         player1 = new UserProfile("Player 1");
         player2 = new UserProfile("Player 2");
+
+        gameViewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
+
+        gameViewModel.getPlayer1Moves().observe(getViewLifecycleOwner(), moves -> {
+            if (moves != null) {
+                player1MovesView.setText(player1.getName() + " Moves: " + moves);
+            }
+        });
+
+        gameViewModel.getPlayer2Moves().observe(getViewLifecycleOwner(), moves -> {
+            if (moves != null) {
+                player2MovesView.setText(player2.getName() + " Moves: " + moves);
+            }
+        });
+
+        gameViewModel.getMovesLeft().observe(getViewLifecycleOwner(), moves -> {
+            if (moves != null) {
+                movesLeftView.setText("Moves Left: " + moves);
+            }
+        });
 
         if (gameViewModel.getBoard().getValue() != null) {
             board = gameViewModel.getBoard().getValue();
@@ -89,11 +113,26 @@ public class GameFragment extends Fragment {
             }
         }
         gameViewModel.setBoard(board);
+
         currentPlayer = player1;
         gameViewModel.setCurrentPlayer(currentPlayer);
+
         gameActive = true;
         gameViewModel.setGameActive(gameActive);
+
         gameViewModel.setPlayerTurnIndicator(currentPlayer.getName() + "'s Turn");
+
+        // Reset move counts
+        gameViewModel.setPlayer1Moves(0);
+        gameViewModel.setPlayer2Moves(0);
+
+        // Reset moves left to the initial number of moves
+        gameViewModel.setMovesLeft(rows * columns); // Assuming movesLeft is the total number of moves available
+
+        // Optionally, you may want to update the UI elements showing move counts and moves left
+        player1MovesView.setText(player1.getName() + " Moves: 0");
+        player2MovesView.setText(player2.getName() + " Moves: 0");
+        movesLeftView.setText("Moves Left: " + (rows * columns));
     }
 
     private void initialiseGrid() {
@@ -157,6 +196,22 @@ public class GameFragment extends Fragment {
             if (board[row][column].isEmpty()) {
                 board[row][column] = currentPlayer.getName();
 
+                Integer player1MovesValue = gameViewModel.getPlayer1Moves().getValue();
+                Integer player2MovesValue = gameViewModel.getPlayer2Moves().getValue();
+                int newMoves;
+
+                if (currentPlayer.equals(player1)) {
+                    newMoves = (player1MovesValue != null ? player1MovesValue : 0) + 1;
+                    gameViewModel.setPlayer1Moves(newMoves);
+                } else {
+                    newMoves = (player2MovesValue != null ? player2MovesValue : 0) + 1;
+                    gameViewModel.setPlayer2Moves(newMoves);
+                }
+
+                Integer movesLeftValue = gameViewModel.getMovesLeft().getValue();
+                int movesLeft = (movesLeftValue != null ? movesLeftValue : 42) - 1; // Example default value
+                gameViewModel.setMovesLeft(movesLeft);
+
                 if (checkWin(row, column)) {
                     Toast.makeText(getContext(), currentPlayer.getName() + " wins !!", Toast.LENGTH_LONG).show();
                     gameActive = false;
@@ -179,6 +234,12 @@ public class GameFragment extends Fragment {
         return false;
     }
 
+    private void switchPlayer() {
+        currentPlayer = currentPlayer.equals(player1) ? player2 : player1;
+        gameViewModel.setCurrentPlayer(currentPlayer);
+    }
+
+
     private boolean isBoardFull() {
         for (int i = 0; i < columns; i++) {
             if (board[0][i].isEmpty()) {
@@ -186,11 +247,6 @@ public class GameFragment extends Fragment {
             }
         }
         return true;
-    }
-
-    private void switchPlayer() {
-        currentPlayer = currentPlayer.equals(player1) ? player2 : player1;
-        gameViewModel.setCurrentPlayer(currentPlayer);
     }
 
     private boolean checkWin(int row, int column) {

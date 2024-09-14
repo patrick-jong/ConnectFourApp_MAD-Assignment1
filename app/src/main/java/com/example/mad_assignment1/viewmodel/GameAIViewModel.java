@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.example.mad_assignment1.profile.UserProfile;
 
-public class GameViewModel extends ViewModel {
+public class GameAIViewModel extends ViewModel {
     private MutableLiveData<String[][]> board = new MutableLiveData<>();
     private MutableLiveData<UserProfile> currentPlayer = new MutableLiveData<>();
     private MutableLiveData<Boolean> gameActive = new MutableLiveData<>();
