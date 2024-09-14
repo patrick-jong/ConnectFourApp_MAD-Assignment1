@@ -6,77 +6,124 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.mad_assignment1.profile.UserProfile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProfileViewModel extends ViewModel {
-    private MutableLiveData<UserProfile> userProfile;
+    // List of all user profiles
+    private final MutableLiveData<List<UserProfile>> userProfiles;
+
+    // Currently selected user profile
+    private final MutableLiveData<UserProfile> currentUserProfile;
 
     public ProfileViewModel() {
-        userProfile = new MutableLiveData<>(new UserProfile("Guest"));
+        // Initialize the list of user profiles
+        userProfiles = new MutableLiveData<>(new ArrayList<>());
+
+        // Initialize the default "Guest" profile
+        UserProfile guestProfile = new UserProfile("Guest");
+
+        // Add the guest profile to the list
+        userProfiles.getValue().add(guestProfile);
+
+        // Set the guest profile as the current user profile
+        currentUserProfile = new MutableLiveData<>(guestProfile);
     }
 
-    public LiveData<UserProfile> getUserProfile() {
-        return userProfile;
+    // Get the list of user profiles
+    public LiveData<List<UserProfile>> getUserProfiles() {
+        return userProfiles;
     }
 
-    public void setUserProfile(UserProfile profile) {
-        userProfile.setValue(profile);
+    // Get the currently selected user profile
+    public LiveData<UserProfile> getCurrentUserProfile() {
+        return currentUserProfile;
     }
 
+    // Set the current user profile
+    public void setCurrentUserProfile(UserProfile profile) {
+        if (profile != null) {
+            currentUserProfile.setValue(profile);
+        }
+    }
+
+    // Add a new user profile and set it as current
+    public void addUserProfile(UserProfile profile) {
+        if (profile != null) {
+            List<UserProfile> profiles = userProfiles.getValue();
+            profiles.add(profile);
+            userProfiles.setValue(profiles); // Update the LiveData
+            setCurrentUserProfile(profile);
+        }
+    }
+
+    // Check if a profile name is unique
+    public boolean isProfileNameUnique(String name) {
+        for (UserProfile profile : userProfiles.getValue()) {
+            if (profile.getName().equals(name)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Methods to update statistics on the current user profile
     public void incrementWins() {
-        UserProfile profile = userProfile.getValue();
+        UserProfile profile = currentUserProfile.getValue();
         if (profile != null) {
             profile.incrementWins();
-            userProfile.setValue(profile);
+            currentUserProfile.setValue(profile);
         }
     }
 
     public void incrementLosses() {
-        UserProfile profile = userProfile.getValue();
+        UserProfile profile = currentUserProfile.getValue();
         if (profile != null) {
             profile.incrementLosses();
-            userProfile.setValue(profile);
+            currentUserProfile.setValue(profile);
         }
     }
 
-    public void incrementTotalGamesPlayed() {
-        UserProfile profile = userProfile.getValue();
+    public void incrementGamesPlayed() {
+        UserProfile profile = currentUserProfile.getValue();
         if (profile != null) {
             profile.incrementGamesPlayed();
-            userProfile.setValue(profile);
+            currentUserProfile.setValue(profile);
         }
     }
 
     public void updateStats(String status) {
-        UserProfile profile = userProfile.getValue();
+        UserProfile profile = currentUserProfile.getValue();
         if (profile != null) {
-            if (status == "Win") {
-                incrementWins();
-                incrementTotalGamesPlayed();
-            } else if (status == "Loss") {
-                incrementLosses();
-                incrementTotalGamesPlayed();
-            } else if (status == "Draw") {
-                incrementTotalGamesPlayed();
+            if ("Win".equals(status)) {
+                profile.incrementWins();
+            } else if ("Loss".equals(status)) {
+                profile.incrementLosses();
             }
+            // Increment games played for any result
+            profile.incrementGamesPlayed();
+            currentUserProfile.setValue(profile);
         }
     }
 
+    // Getters for statistics
     public int getWins() {
-        UserProfile profile = userProfile.getValue();
+        UserProfile profile = currentUserProfile.getValue();
         return profile != null ? profile.getWins() : 0;
     }
 
     public int getLosses() {
-        UserProfile profile = userProfile.getValue();
+        UserProfile profile = currentUserProfile.getValue();
         return profile != null ? profile.getLosses() : 0;
     }
 
     public int getTotalGamesPlayed() {
-        UserProfile profile = userProfile.getValue();
-        return profile != null ? profile.getTotalGamesPlayed() : 0;
+        UserProfile profile = currentUserProfile.getValue();
+        return profile != null ? profile.getGamesPlayed() : 0;
     }
 
     public double getWinPercentage() {
-        UserProfile profile = userProfile.getValue();
+        UserProfile profile = currentUserProfile.getValue();
         return profile != null ? profile.getWinPercentage() : 0;
     }
 }
