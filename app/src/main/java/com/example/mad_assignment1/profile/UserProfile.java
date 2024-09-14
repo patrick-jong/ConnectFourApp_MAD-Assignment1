@@ -6,20 +6,20 @@ import java.util.List;
 
 public class UserProfile {
 
-    private String name;
+    private String username;
     private int selectedAvatar;
 
     // Constructor
     public UserProfile(String inName) {
-        name = inName;
+        username = inName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.username = name;
     }
 
     public String getName() {
-        return name;
+        return username;
     }
 
     public List<Integer> getAvailableAvatars() {
