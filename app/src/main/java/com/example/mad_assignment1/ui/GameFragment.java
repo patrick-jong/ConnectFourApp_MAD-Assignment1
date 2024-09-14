@@ -10,14 +10,17 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import com.example.mad_assignment1.livemodel.ConnectFourViewModel;
+
 import com.example.mad_assignment1.R;
+import com.example.mad_assignment1.profile.UserProfile;
+import com.example.mad_assignment1.viewmodel.GameViewModel;
 
 import java.util.Arrays;
 
@@ -28,21 +31,63 @@ public class GameFragment extends Fragment {
     private Button btnBack;
     private Button btnReset;
 
-    // Use ViewModel to hold game state
-    private ConnectFourViewModel connectFourViewModel;
+    private int rows = 6;
+    private int columns = 7;
+    private String[][] board;
+    private UserProfile player1;
+    private UserProfile player2;
+    private UserProfile currentPlayer;
+    private TextView player1MovesView;
+    private TextView player2MovesView;
+    private TextView movesLeftView;
+
+    private boolean gameActive;
+    private GameViewModel gameViewModel;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_game, container, false);
 
-        // Use ViewModelProvider with requireActivity() to scope the ViewModel to the activity
-        connectFourViewModel = new ViewModelProvider(requireActivity()).get(ConnectFourViewModel.class);
-
         playerTurnIndicator = view.findViewById(R.id.player_turn_indicator);
         gameGrid = view.findViewById(R.id.game_grid);
         btnBack = view.findViewById(R.id.btn_back);
         btnReset = view.findViewById(R.id.btn_reset);
+        player1MovesView = view.findViewById(R.id.player1_moves);
+        player2MovesView = view.findViewById(R.id.player2_moves);
+        movesLeftView = view.findViewById(R.id.moves_left);
+
+        player1 = new UserProfile("Player 1");
+        player2 = new UserProfile("Player 2");
+
+        gameViewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
+
+        gameViewModel.getPlayer1Moves().observe(getViewLifecycleOwner(), moves -> {
+            if (moves != null) {
+                player1MovesView.setText(player1.getName() + " Moves: " + moves);
+            }
+        });
+
+        gameViewModel.getPlayer2Moves().observe(getViewLifecycleOwner(), moves -> {
+            if (moves != null) {
+                player2MovesView.setText(player2.getName() + " Moves: " + moves);
+            }
+        });
+
+        gameViewModel.getMovesLeft().observe(getViewLifecycleOwner(), moves -> {
+            if (moves != null) {
+                movesLeftView.setText("Moves Left: " + moves);
+            }
+        });
+
+        if (gameViewModel.getBoard().getValue() != null) {
+            board = gameViewModel.getBoard().getValue();
+            currentPlayer = gameViewModel.getCurrentPlayer().getValue();
+            gameActive = gameViewModel.getGameActive().getValue();
+            playerTurnIndicator.setText(gameViewModel.getPlayerTurnIndicator().getValue());
+        } else {
+            startNewGame();
+        }
 
         initialiseGrid();
 
@@ -52,17 +97,47 @@ public class GameFragment extends Fragment {
         });
 
         btnReset.setOnClickListener(v -> {
-            connectFourViewModel.getConnectFourGame().startNewGame();  // Reset the game logic
+            startNewGame();
             updateUI();
-            Toast.makeText(getContext(), "Game has been reset!", Toast.LENGTH_SHORT).show(); // Notify the user
+            Toast.makeText(getContext(), "Game has been reset!", Toast.LENGTH_SHORT).show();
         });
 
         return view;
     }
 
+    private void startNewGame() {
+        board = new String[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                board[i][j] = "";
+            }
+        }
+        gameViewModel.setBoard(board);
+
+        currentPlayer = player1;
+        gameViewModel.setCurrentPlayer(currentPlayer);
+
+        gameActive = true;
+        gameViewModel.setGameActive(gameActive);
+
+        gameViewModel.setPlayerTurnIndicator(currentPlayer.getName() + "'s Turn");
+
+        // Reset move counts
+        gameViewModel.setPlayer1Moves(0);
+        gameViewModel.setPlayer2Moves(0);
+
+        // Reset moves left to the initial number of moves
+        gameViewModel.setMovesLeft(rows * columns); // Assuming movesLeft is the total number of moves available
+
+        // Optionally, you may want to update the UI elements showing move counts and moves left
+        player1MovesView.setText(player1.getName() + " Moves: 0");
+        player2MovesView.setText(player2.getName() + " Moves: 0");
+        movesLeftView.setText("Moves Left: " + (rows * columns));
+    }
+
     private void initialiseGrid() {
-        Integer[] initialGrid = new Integer[connectFourViewModel.getConnectFourGame().getRows() * connectFourViewModel.getConnectFourGame().getColumns()];
-        Arrays.fill(initialGrid, R.drawable.empty_disc); // Fill with empty_disc icon
+        Integer[] initialGrid = new Integer[rows * columns];
+        Arrays.fill(initialGrid, R.drawable.empty_disc);
 
         gridAdapter = new ArrayAdapter<Integer>(requireContext(), android.R.layout.simple_list_item_1, initialGrid) {
             @NonNull
@@ -71,22 +146,22 @@ public class GameFragment extends Fragment {
                 ImageView imageView;
                 if (convertView == null) {
                     imageView = new ImageView(getContext());
-                    imageView.setLayoutParams(new ViewGroup.LayoutParams(100, 100));  // Adjust cell size as needed
+                    imageView.setLayoutParams(new ViewGroup.LayoutParams(100, 100));
                     imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 } else {
                     imageView = (ImageView) convertView;
                 }
 
-                int row = position / connectFourViewModel.getConnectFourGame().getColumns();
-                int col = position % connectFourViewModel.getConnectFourGame().getColumns();
-                String disc = connectFourViewModel.getConnectFourGame().getBoard()[row][col];
+                int row = position / columns;
+                int col = position % columns;
+                String disc = board[row][col];
 
-                if (disc.equals("Player 1")) {
-                    imageView.setImageResource(R.drawable.red_disc);  // Set Player 1's disc
-                } else if (disc.equals("Player 2")) {
-                    imageView.setImageResource(R.drawable.yellow_disc);  // Set Player 2's disc
+                if (disc.equals(player1.getName())) {
+                    imageView.setImageResource(R.drawable.red_disc);
+                } else if (disc.equals(player2.getName())) {
+                    imageView.setImageResource(R.drawable.yellow_disc);
                 } else {
-                    imageView.setImageResource(R.drawable.empty_disc);  // Set empty spot
+                    imageView.setImageResource(R.drawable.empty_disc);
                 }
 
                 return imageView;
@@ -96,24 +171,14 @@ public class GameFragment extends Fragment {
         gameGrid.setAdapter(gridAdapter);
 
         gameGrid.setOnItemClickListener((parent, view, position, id) -> {
-            if (!connectFourViewModel.getConnectFourGame().isGameActive()) { // Check if the game is still active
+            if (!gameActive) {
                 Toast.makeText(getContext(), "Game over! Start a new game.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            int column = position % connectFourViewModel.getConnectFourGame().getColumns(); // Calculate column from grid position
-            if (connectFourViewModel.getConnectFourGame().makeMove(column)) {
-                updateUI(); // Update UI after a successful move
-
-                if(connectFourViewModel.getConnectFourGame().isDraw()) {
-                    playerTurnIndicator.setTypeface(null, android.graphics.Typeface.BOLD);
-                    playerTurnIndicator.setTextColor(getResources().getColor(R.color.pastel_green_dark));
-                    playerTurnIndicator.setText("It's a draw :(");
-                } else if (!connectFourViewModel.getConnectFourGame().isGameActive()) {
-                    playerTurnIndicator.setTypeface(null, android.graphics.Typeface.BOLD);
-                    playerTurnIndicator.setTextColor(getResources().getColor(R.color.pastel_green_dark));
-                    playerTurnIndicator.setText(connectFourViewModel.getConnectFourGame().getCurrentPlayer() + " wins !!");
-                }
+            int column = position % columns;
+            if (makeMove(column)) {
+                updateUI();
             } else {
                 Toast.makeText(getContext(), "Invalid move. Try a different column.", Toast.LENGTH_SHORT).show();
             }
@@ -122,9 +187,102 @@ public class GameFragment extends Fragment {
         updateUI();
     }
 
+    private boolean makeMove(int column) {
+        if (column < 0 || column >= columns || !gameActive) {
+            return false;
+        }
+
+        for (int row = rows - 1; row >= 0; row--) {
+            if (board[row][column].isEmpty()) {
+                board[row][column] = currentPlayer.getName();
+
+                Integer player1MovesValue = gameViewModel.getPlayer1Moves().getValue();
+                Integer player2MovesValue = gameViewModel.getPlayer2Moves().getValue();
+                int newMoves;
+
+                if (currentPlayer.equals(player1)) {
+                    newMoves = (player1MovesValue != null ? player1MovesValue : 0) + 1;
+                    gameViewModel.setPlayer1Moves(newMoves);
+                } else {
+                    newMoves = (player2MovesValue != null ? player2MovesValue : 0) + 1;
+                    gameViewModel.setPlayer2Moves(newMoves);
+                }
+
+                Integer movesLeftValue = gameViewModel.getMovesLeft().getValue();
+                int movesLeft = (movesLeftValue != null ? movesLeftValue : 42) - 1; // Example default value
+                gameViewModel.setMovesLeft(movesLeft);
+
+                if (checkWin(row, column)) {
+                    Toast.makeText(getContext(), currentPlayer.getName() + " wins !!", Toast.LENGTH_LONG).show();
+                    gameActive = false;
+                    gameViewModel.setGameActive(false);
+                    gameViewModel.setPlayerTurnIndicator(currentPlayer.getName() + " wins!");
+                } else if (isBoardFull()) {
+                    Toast.makeText(getContext(), "It's a draw!", Toast.LENGTH_LONG).show();
+                    gameActive = false;
+                    gameViewModel.setGameActive(false);
+                    gameViewModel.setPlayerTurnIndicator("It's a draw!");
+                } else {
+                    switchPlayer();
+                }
+
+                gameViewModel.setBoard(board);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void switchPlayer() {
+        currentPlayer = currentPlayer.equals(player1) ? player2 : player1;
+        gameViewModel.setCurrentPlayer(currentPlayer);
+    }
+
+
+    private boolean isBoardFull() {
+        for (int i = 0; i < columns; i++) {
+            if (board[0][i].isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean checkWin(int row, int column) {
+        return (checkDirection(row, column, 0, 1) ||
+                checkDirection(row, column, 1, 0) ||
+                checkDirection(row, column, 1, 1) ||
+                checkDirection(row, column, 1, -1));
+    }
+
+    private boolean checkDirection(int row, int column, int rowDelta, int colDelta) {
+        int count = 1;
+        count += countConsecutive(row, column, rowDelta, colDelta);
+        count += countConsecutive(row, column, -rowDelta, -colDelta);
+        return count >= 4;
+    }
+
+    private int countConsecutive(int startRow, int startCol, int rowDelta, int colDelta) {
+        int count = 0;
+        String playerDisc = currentPlayer.getName();
+        int row = startRow + rowDelta;
+        int col = startCol + colDelta;
+
+        while (row >= 0 && row < rows && col >= 0 && col < columns && board[row][col].equals(playerDisc)) {
+            count++;
+            row += rowDelta;
+            col += colDelta;
+        }
+
+        return count;
+    }
+
     private void updateUI() {
-        if (connectFourViewModel.getConnectFourGame().isGameActive()) {
-            playerTurnIndicator.setText(connectFourViewModel.getConnectFourGame().getCurrentPlayer() + "'s Turn"); // Update the player turn indicator
+        if (gameActive) {
+            playerTurnIndicator.setText(currentPlayer.getName() + "'s Turn");
+        } else {
+            playerTurnIndicator.setText(gameViewModel.getPlayerTurnIndicator().getValue());
         }
         gridAdapter.notifyDataSetChanged();
     }

@@ -14,23 +14,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import com.example.mad_assignment1.R;
-import com.example.mad_assignment1.livemodel.UserProfileViewModel;
 
 public class MainMenuFragment extends Fragment {
-    private UserProfileViewModel userProfileViewModel;
-
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Loading main fragment
         View view = inflater.inflate(R.layout.fragment_main_menu, container, false);
-
-        // Setting username (to be changed in settings)
-        userProfileViewModel = new ViewModelProvider(requireActivity()).get(UserProfileViewModel.class);
-        userProfileViewModel.setUsername("PlayerOne");
-        TextView usernameDisplay = view.findViewById(R.id.username);
-        usernameDisplay.setText(userProfileViewModel.getUsername());
 
         // Buttons
         Button btnTwoPlayer = view.findViewById(R.id.btn_two_player);

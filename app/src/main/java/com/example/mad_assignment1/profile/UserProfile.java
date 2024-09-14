@@ -6,19 +6,20 @@ import java.util.List;
 
 public class UserProfile {
 
-    private String name;
+    private String username;
     private int selectedAvatar;
 
-    public UserProfile() {
-        // Default constructor
+    // Constructor
+    public UserProfile(String inName) {
+        username = inName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.username = name;
     }
 
     public String getName() {
-        return name;
+        return username;
     }
 
     public List<Integer> getAvailableAvatars() {
@@ -33,4 +34,5 @@ public class UserProfile {
     public int getSelectedAvatar() {
         return selectedAvatar;
     }
+
 }
