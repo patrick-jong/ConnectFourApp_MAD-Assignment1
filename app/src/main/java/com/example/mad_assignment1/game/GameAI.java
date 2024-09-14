@@ -1,12 +1,15 @@
 package com.example.mad_assignment1.game;
 
+import com.example.mad_assignment1.profile.UserProfile;
+
 import java.util.Random;
 
 public class GameAI extends ConnectFourGame {
     private Random random;
 
-    public GameAI() {
-        super();
+    // Constructor that initializes the game with user profiles, including an AI profile
+    public GameAI(UserProfile player1, UserProfile aiPlayer) {
+        super(player1, aiPlayer);  // Initialize the game with one human player and one AI player
         random = new Random();
     }
 

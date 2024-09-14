@@ -34,21 +34,23 @@ public class GameAIFragment extends Fragment {
     private ConnectFourViewModel connectFourViewModel;
     private UserProfileViewModel userProfileViewModel;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ai_game, container, false);
 
-        // Use ViewModelProvider with requireActivity() to scope the ViewModel to the activity
+        // Initialize ViewModels
         connectFourViewModel = new ViewModelProvider(requireActivity()).get(ConnectFourViewModel.class);
+        userProfileViewModel = new ViewModelProvider(requireActivity()).get(UserProfileViewModel.class);
 
         playerTurnIndicator = view.findViewById(R.id.player_turn_indicator);
         gameGrid = view.findViewById(R.id.game_grid);
         btnBack = view.findViewById(R.id.btn_back);
         btnReset = view.findViewById(R.id.btn_reset);
 
+        // Set username display
         playerTurnIndicator.setText(userProfileViewModel.getUsername());
+
         initialiseGrid();
 
         btnBack.setOnClickListener(v -> {
@@ -86,9 +88,9 @@ public class GameAIFragment extends Fragment {
                 int col = position % connectFourViewModel.getConnectFourGame().getColumns();
                 String disc = connectFourViewModel.getConnectFourGame().getBoard()[row][col];
 
-                if (disc.equals("userProfileViewModel.getUsername()")) {
+                if (disc.equals(userProfileViewModel.getUsername())) {
                     imageView.setImageResource(R.drawable.red_disc);  // Set Player 1's disc
-                } else if (disc.equals("AI")) {
+                } else if (disc.equals("Player 2")) {  // AI plays as "Player 2"
                     imageView.setImageResource(R.drawable.yellow_disc);  // Set AI's disc
                 } else {
                     imageView.setImageResource(R.drawable.empty_disc);  // Set empty spot
@@ -121,18 +123,22 @@ public class GameAIFragment extends Fragment {
                     playerTurnIndicator.setText("Player 1 wins !!");
                 } else {
                     // Make AI move after Player 1's move
-                    ((GameAI) connectFourViewModel.getConnectFourGame()).makeAIMove();
-                    updateUI();
+                    if (connectFourViewModel.getConnectFourGame() instanceof GameAI) {
+                        ((GameAI) connectFourViewModel.getConnectFourGame()).makeAIMove();
+                        updateUI();
 
-                    // Check for win or draw after AI's move
-                    if (connectFourViewModel.getConnectFourGame().isDraw()) {
-                        playerTurnIndicator.setTypeface(null, android.graphics.Typeface.BOLD);
-                        playerTurnIndicator.setTextColor(getResources().getColor(R.color.pastel_green_dark));
-                        playerTurnIndicator.setText("It's a draw :(");
-                    } else if (!connectFourViewModel.getConnectFourGame().isGameActive()) {
-                        playerTurnIndicator.setTypeface(null, android.graphics.Typeface.BOLD);
-                        playerTurnIndicator.setTextColor(getResources().getColor(R.color.pastel_green_dark));
-                        playerTurnIndicator.setText("AI wins !!");
+                        // Check for win or draw after AI's move
+                        if (connectFourViewModel.getConnectFourGame().isDraw()) {
+                            playerTurnIndicator.setTypeface(null, android.graphics.Typeface.BOLD);
+                            playerTurnIndicator.setTextColor(getResources().getColor(R.color.pastel_green_dark));
+                            playerTurnIndicator.setText("It's a draw :(");
+                        } else if (!connectFourViewModel.getConnectFourGame().isGameActive()) {
+                            playerTurnIndicator.setTypeface(null, android.graphics.Typeface.BOLD);
+                            playerTurnIndicator.setTextColor(getResources().getColor(R.color.pastel_green_dark));
+                            playerTurnIndicator.setText("AI wins !!");
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Game configuration error.", Toast.LENGTH_SHORT).show();
                     }
                 }
             } else {
@@ -149,4 +155,6 @@ public class GameAIFragment extends Fragment {
         }
         gridAdapter.notifyDataSetChanged();
     }
+
+
 }

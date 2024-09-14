@@ -9,8 +9,9 @@ public class UserProfile {
     private String name;
     private int selectedAvatar;
 
-    public UserProfile() {
-        // Default constructor
+    // Constructor
+    public UserProfile(String inName) {
+        name = inName;
     }
 
     public void setName(String name) {
@@ -33,4 +34,5 @@ public class UserProfile {
     public int getSelectedAvatar() {
         return selectedAvatar;
     }
+
 }

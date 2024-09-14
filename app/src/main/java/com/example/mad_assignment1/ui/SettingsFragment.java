@@ -36,7 +36,7 @@ public class SettingsFragment extends Fragment {
         // Back button
         btnBack.setOnClickListener(v -> {
             NavController navController = NavHostFragment.findNavController(this);
-            navController.navigate(R.id.action_gameFragment_to_mainMenuFragment);
+            navController.navigate(R.id.action_settingsFragment_to_mainMenuFragment);
         });
 
         return view;

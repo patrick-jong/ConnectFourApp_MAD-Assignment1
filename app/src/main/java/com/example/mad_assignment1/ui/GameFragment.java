@@ -17,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import com.example.mad_assignment1.livemodel.ConnectFourViewModel;
+import com.example.mad_assignment1.livemodel.UserProfileViewModel;
+import com.example.mad_assignment1.profile.UserProfile;
 import com.example.mad_assignment1.R;
 
 import java.util.Arrays;
@@ -30,15 +32,33 @@ public class GameFragment extends Fragment {
 
     // Use ViewModel to hold game state
     private ConnectFourViewModel connectFourViewModel;
+    private UserProfileViewModel userProfileViewModel;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_game, container, false);
 
-        // Use ViewModelProvider with requireActivity() to scope the ViewModel to the activity
-        connectFourViewModel = new ViewModelProvider(requireActivity()).get(ConnectFourViewModel.class);
+        // Initialize UserProfileViewModel to get user profiles
+        userProfileViewModel = new ViewModelProvider(requireActivity()).get(UserProfileViewModel.class);
 
+        // Retrieve user profiles (assuming you have methods to get these from the UserProfileViewModel)
+        UserProfile player1 = new UserProfile("Player 1"); // Retrieve player 1 profile
+        UserProfile player2 = new UserProfile("Player 2"); // Retrieve player 2 profile
+
+        // Initialize ConnectFourViewModel with the user profiles using a ViewModelFactory
+        connectFourViewModel = new ViewModelProvider(this, new ViewModelProvider.Factory() {
+            @NonNull
+            @Override
+            public <T extends androidx.lifecycle.ViewModel> T create(@NonNull Class<T> modelClass) {
+                if (modelClass.isAssignableFrom(ConnectFourViewModel.class)) {
+                    return (T) new ConnectFourViewModel(player1, player2);
+                }
+                throw new IllegalArgumentException("Unknown ViewModel class");
+            }
+        }).get(ConnectFourViewModel.class);
+
+        // XML stuff
         playerTurnIndicator = view.findViewById(R.id.player_turn_indicator);
         gameGrid = view.findViewById(R.id.game_grid);
         btnBack = view.findViewById(R.id.btn_back);
@@ -53,8 +73,14 @@ public class GameFragment extends Fragment {
 
         btnReset.setOnClickListener(v -> {
             connectFourViewModel.getConnectFourGame().startNewGame();  // Reset the game logic
+            connectFourViewModel.setStatusMessage(connectFourViewModel.getConnectFourGame().getCurrentPlayer().getName() + "'s Turn"); // Reset status message
             updateUI();
             Toast.makeText(getContext(), "Game has been reset!", Toast.LENGTH_SHORT).show(); // Notify the user
+        });
+
+        // Observe status message from ViewModel to update UI
+        connectFourViewModel.getStatusMessage().observe(getViewLifecycleOwner(), message -> {
+            playerTurnIndicator.setText(message);
         });
 
         return view;
@@ -81,9 +107,13 @@ public class GameFragment extends Fragment {
                 int col = position % connectFourViewModel.getConnectFourGame().getColumns();
                 String disc = connectFourViewModel.getConnectFourGame().getBoard()[row][col];
 
-                if (disc.equals("Player 1")) {
+                // Retrieve player names from UserProfile instances
+                UserProfile player1 = connectFourViewModel.getConnectFourGame().getPlayer1();
+                UserProfile player2 = connectFourViewModel.getConnectFourGame().getPlayer2();
+
+                if (disc.equals(player1.getName())) {
                     imageView.setImageResource(R.drawable.red_disc);  // Set Player 1's disc
-                } else if (disc.equals("Player 2")) {
+                } else if (disc.equals(player2.getName())) {
                     imageView.setImageResource(R.drawable.yellow_disc);  // Set Player 2's disc
                 } else {
                     imageView.setImageResource(R.drawable.empty_disc);  // Set empty spot
@@ -103,17 +133,8 @@ public class GameFragment extends Fragment {
 
             int column = position % connectFourViewModel.getConnectFourGame().getColumns(); // Calculate column from grid position
             if (connectFourViewModel.getConnectFourGame().makeMove(column)) {
+                connectFourViewModel.updateStatusAfterMove(); // Update status in the ViewModel
                 updateUI(); // Update UI after a successful move
-
-                if(connectFourViewModel.getConnectFourGame().isDraw()) {
-                    playerTurnIndicator.setTypeface(null, android.graphics.Typeface.BOLD);
-                    playerTurnIndicator.setTextColor(getResources().getColor(R.color.pastel_green_dark));
-                    playerTurnIndicator.setText("It's a draw :(");
-                } else if (!connectFourViewModel.getConnectFourGame().isGameActive()) {
-                    playerTurnIndicator.setTypeface(null, android.graphics.Typeface.BOLD);
-                    playerTurnIndicator.setTextColor(getResources().getColor(R.color.pastel_green_dark));
-                    playerTurnIndicator.setText(connectFourViewModel.getConnectFourGame().getCurrentPlayer() + " wins !!");
-                }
             } else {
                 Toast.makeText(getContext(), "Invalid move. Try a different column.", Toast.LENGTH_SHORT).show();
             }
@@ -123,9 +144,6 @@ public class GameFragment extends Fragment {
     }
 
     private void updateUI() {
-        if (connectFourViewModel.getConnectFourGame().isGameActive()) {
-            playerTurnIndicator.setText(connectFourViewModel.getConnectFourGame().getCurrentPlayer() + "'s Turn"); // Update the player turn indicator
-        }
-        gridAdapter.notifyDataSetChanged();
+        gridAdapter.notifyDataSetChanged(); // Notify adapter to refresh the grid view with updated board state
     }
 }

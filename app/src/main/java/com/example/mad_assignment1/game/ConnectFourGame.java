@@ -1,14 +1,20 @@
 package com.example.mad_assignment1.game;
 
+import com.example.mad_assignment1.profile.UserProfile;
+
 public class ConnectFourGame {
     private int rows = 6;
     private int columns = 7;
     private String[][] board;
-    private String currentPlayer;
-    private String currentPlayer2;
+    private UserProfile player1;
+    private UserProfile player2;
+    private UserProfile currentPlayer;
     private boolean gameActive;
 
-    public ConnectFourGame() {
+    // Constructor to initialize the game with user profiles
+    public ConnectFourGame(UserProfile player1, UserProfile player2) {
+        this.player1 = player1;
+        this.player2 = player2;
         startNewGame();
     }
 
@@ -19,7 +25,7 @@ public class ConnectFourGame {
                 board[i][j] = "";  // Empty cell
             }
         }
-        currentPlayer = "Player 1";  // Player 1 starts
+        currentPlayer = player1;  // Player 1 starts
         gameActive = true;  // Set game to active state
     }
 
@@ -30,7 +36,7 @@ public class ConnectFourGame {
 
         for (int row = rows - 1; row >= 0; row--) {
             if (board[row][column].isEmpty()) {
-                board[row][column] = currentPlayer;  // Place the current player's disc
+                board[row][column] = currentPlayer.getName();  // Place the current player's disc
                 if (checkWin(row, column)) {
                     gameActive = false;  // Set game to inactive state
                 } else {
@@ -44,13 +50,8 @@ public class ConnectFourGame {
     }
 
     private void switchPlayer() {
-        if (currentPlayer.equals("Player 1")) {
-            currentPlayer = "Player 2";
-        } else {
-            currentPlayer = "Player 1";
-        }
+        currentPlayer = (currentPlayer == player1) ? player2 : player1;  // Switch between players
     }
-
 
     private boolean checkWin(int row, int column) {
         return (checkDirection(row, column, 0, 1) ||  // Horizontal
@@ -72,7 +73,7 @@ public class ConnectFourGame {
 
     private int countConsecutive(int startRow, int startCol, int rowDelta, int colDelta) {
         int count = 0;
-        String playerDisc = currentPlayer;
+        String playerDisc = currentPlayer.getName();
 
         int row = startRow + rowDelta;
         int col = startCol + colDelta;
@@ -110,11 +111,16 @@ public class ConnectFourGame {
         return board;
     }
 
-    public String getCurrentPlayer() {
+    public UserProfile getCurrentPlayer() {
         return currentPlayer;
     }
 
     public boolean isGameActive() {
         return gameActive;
     }
+
+    public UserProfile getPlayer1() { return player1; }
+
+    public UserProfile getPlayer2() { return player2; }
+
 }
