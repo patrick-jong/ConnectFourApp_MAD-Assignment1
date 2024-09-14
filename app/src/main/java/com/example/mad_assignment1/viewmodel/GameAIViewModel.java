@@ -12,7 +12,11 @@ public class GameAIViewModel extends ViewModel {
     private MutableLiveData<String> playerTurnIndicator = new MutableLiveData<>();
     private MutableLiveData<Integer> player1Moves = new MutableLiveData<>(0);
     private MutableLiveData<Integer> player2Moves = new MutableLiveData<>(0);
-    private MutableLiveData<Integer> movesLeft = new MutableLiveData<>(42); //TODO: Change (if options say so)
+    private MutableLiveData<Integer> movesLeft = new MutableLiveData<>(); //TODO: Change (if options say so)
+
+    public void initializeMovesLeft(int totalMoves) {
+        this.movesLeft.setValue(totalMoves);
+    }
 
     public LiveData<String[][]> getBoard() { return board; }
     public void setBoard(String[][] board) { this.board.setValue(board); }

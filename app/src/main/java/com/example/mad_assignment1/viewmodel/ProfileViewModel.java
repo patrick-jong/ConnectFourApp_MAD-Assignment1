@@ -126,4 +126,11 @@ public class ProfileViewModel extends ViewModel {
         UserProfile profile = currentUserProfile.getValue();
         return profile != null ? profile.getWinPercentage() : 0;
     }
+
+    public void resetStatistics() {
+        UserProfile profile = currentUserProfile.getValue();
+        profile.setWins(0);
+        profile.setLosses(0);
+        profile.setGamesPlayed(0);
+    }
 }

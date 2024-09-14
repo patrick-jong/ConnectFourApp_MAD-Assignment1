@@ -21,6 +21,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.mad_assignment1.R;
 import com.example.mad_assignment1.profile.UserProfile;
 import com.example.mad_assignment1.viewmodel.GameViewModel;
+import com.example.mad_assignment1.viewmodel.SettingsViewModel;
 
 import java.util.Arrays;
 
@@ -43,6 +44,7 @@ public class GameFragment extends Fragment {
 
     private boolean gameActive;
     private GameViewModel gameViewModel;
+    private SettingsViewModel settingsViewModel;
 
     @Nullable
     @Override
@@ -61,6 +63,7 @@ public class GameFragment extends Fragment {
         player2 = new UserProfile("Player 2");
 
         gameViewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
+        settingsViewModel = new ViewModelProvider(requireActivity()).get(SettingsViewModel.class);
 
         gameViewModel.getPlayer1Moves().observe(getViewLifecycleOwner(), moves -> {
             if (moves != null) {
@@ -89,7 +92,16 @@ public class GameFragment extends Fragment {
             startNewGame();
         }
 
-        initialiseGrid();
+        // Retrieve grid size from SettingsViewModel
+        settingsViewModel.getNumRows().observe(getViewLifecycleOwner(), numRows -> {
+            rows = numRows;
+            settingsViewModel.getNumColumns().observe(getViewLifecycleOwner(), numColumns -> {
+                columns = numColumns;
+                // After getting grid size, initialize the game
+                startNewGame();
+                initialiseGrid();
+            });
+        });
 
         btnBack.setOnClickListener(v -> {
             NavController navController = NavHostFragment.findNavController(this);
@@ -106,6 +118,7 @@ public class GameFragment extends Fragment {
     }
 
     private void startNewGame() {
+        gameViewModel.initializeMovesLeft(rows * columns);
         board = new String[rows][columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -129,7 +142,6 @@ public class GameFragment extends Fragment {
         // Reset moves left to the initial number of moves
         gameViewModel.setMovesLeft(rows * columns); // Assuming movesLeft is the total number of moves available
 
-        // Optionally, you may want to update the UI elements showing move counts and moves left
         player1MovesView.setText(player1.getName() + " Moves: 0");
         player2MovesView.setText(player2.getName() + " Moves: 0");
         movesLeftView.setText("Moves Left: " + (rows * columns));

@@ -61,7 +61,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btn_save_profile"
         android:layout_margin="16dp"
         android:clipToPadding="false"
-        android:padding="8dp"/>
+        android:padding="9dp"/>
 
     <Button
         android:id="@+id/btn_save_profile"

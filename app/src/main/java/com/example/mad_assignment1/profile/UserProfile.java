@@ -1,23 +1,23 @@
 package com.example.mad_assignment1.profile;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.example.mad_assignment1.R;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class UserProfile implements Parcelable {
     private String name;
-    private Integer avatar;
+    private int avatar; // Changed from Integer to int
     private int gamesPlayed;
     private int wins;
     private int losses;
 
     public UserProfile(String name) {
         this.name = name;
-        this.avatar = 1;
+        this.avatar = R.drawable.avatar1; // Set to a valid drawable resource ID
         this.gamesPlayed = 0;
         this.wins = 0;
         this.losses = 0;
@@ -67,12 +67,12 @@ public class UserProfile implements Parcelable {
         this.name = name;
     }
 
-    public Integer getAvatar() {
+    public int getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(Integer avatar) {
-        this.avatar = avatar;
+    public void setAvatar(int avatarResourceId) {
+        this.avatar = avatarResourceId;
     }
 
     public int getGamesPlayed() {
@@ -91,6 +91,14 @@ public class UserProfile implements Parcelable {
         this.wins++;
     }
 
+    public void setWins(int inWin) {
+        wins = inWin;
+    }
+
+    public void setLosses(int inLoss) {
+        losses = inLoss;
+    }
+
     public int getLosses() {
         return losses;
     }
@@ -99,15 +107,24 @@ public class UserProfile implements Parcelable {
         this.losses++;
     }
 
-    public int getTotalGamesPlayed() {
-        return gamesPlayed;
+    public double getWinPercentage() {
+        if (gamesPlayed == 0) {
+            return 0.0;
+        }
+        return ((double) wins / gamesPlayed) * 100;
     }
 
-    public double getWinPercentage() {
-        return ((double)wins / (double)gamesPlayed) * 100;
+    public void setGamesPlayed(int inInt) {
+        gamesPlayed = inInt;
     }
 
     public List<Integer> getAvailableAvatars() {
-        return List.of(R.drawable.avatar1, R.drawable.avatar2, R.drawable.avatar3);
+        return Arrays.asList(
+                R.drawable.avatar1,
+                R.drawable.avatar2,
+                R.drawable.avatar3,
+                R.drawable.avatar4,
+                R.drawable.avatar5
+        );
     }
 }

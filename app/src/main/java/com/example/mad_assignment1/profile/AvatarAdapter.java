@@ -4,34 +4,63 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import androidx.annotation.NonNull;
+
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.mad_assignment1.R;
+
 import java.util.List;
 
-public class AvatarAdapter extends RecyclerView.Adapter<AvatarAdapter.AvatarViewHolder> {
+public class AvatarAdapter extends RecyclerView.Adapter<AvatarAdapter.ViewHolder> {
 
-    private Context context;
-    private List<Integer> avatarList;
+    private final List<Integer> avatarList; // List of avatar resource IDs
+    private final Context context;
+    private OnAvatarSelectedListener listener;
+    private int selectedAvatarResourceId;
 
-    public AvatarAdapter(Context context, List<Integer> avatarList) {
+    public interface OnAvatarSelectedListener {
+        void onAvatarSelected(int avatarResourceId);
+    }
+
+    public void setOnAvatarSelectedListener(OnAvatarSelectedListener listener) {
+        this.listener = listener;
+    }
+
+    public AvatarAdapter(Context context, List<Integer> avatars, int selectedAvatarResourceId) {
         this.context = context;
-        this.avatarList = avatarList;
+        this.avatarList = avatars;
+        this.selectedAvatarResourceId = selectedAvatarResourceId;
     }
 
-    @NonNull
+    public void setSelectedAvatarResourceId(int avatarResourceId) {
+        this.selectedAvatarResourceId = avatarResourceId;
+        notifyDataSetChanged();
+    }
+
     @Override
-    public AvatarViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AvatarAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_avatar, parent, false);
-        return new AvatarViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AvatarViewHolder holder, int position) {
-        holder.avatarImageView.setImageResource(avatarList.get(position));
+    public void onBindViewHolder(AvatarAdapter.ViewHolder holder, int position) {
+        int avatarResourceId = avatarList.get(position);
+        holder.avatarImageView.setImageResource(avatarResourceId);
+
+        // Highlight the selected avatar
+        if (avatarResourceId == selectedAvatarResourceId) {
+            holder.avatarItemContainer.setBackgroundResource(R.drawable.avatar_selected_border);
+        } else {
+            holder.avatarItemContainer.setBackgroundResource(0); // Remove background
+        }
+
         holder.itemView.setOnClickListener(v -> {
-            // Handle avatar selection
+            if (listener != null) {
+                listener.onAvatarSelected(avatarResourceId);
+            }
         });
     }
 
@@ -40,12 +69,16 @@ public class AvatarAdapter extends RecyclerView.Adapter<AvatarAdapter.AvatarView
         return avatarList.size();
     }
 
-    public static class AvatarViewHolder extends RecyclerView.ViewHolder {
-        ImageView avatarImageView;
+    // ViewHolder class
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public ImageView avatarImageView;
+        public FrameLayout avatarItemContainer;
 
-        public AvatarViewHolder(@NonNull View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            avatarImageView = itemView.findViewById(R.id.avatar_image);
+            avatarImageView = itemView.findViewById(R.id.avatar_image_view);
+            avatarItemContainer = itemView.findViewById(R.id.avatar_item_container);
         }
     }
+
 }

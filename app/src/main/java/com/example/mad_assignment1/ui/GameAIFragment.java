@@ -23,6 +23,7 @@ import com.example.mad_assignment1.R;
 import com.example.mad_assignment1.profile.UserProfile;
 import com.example.mad_assignment1.viewmodel.GameAIViewModel;
 import com.example.mad_assignment1.viewmodel.ProfileViewModel;
+import com.example.mad_assignment1.viewmodel.SettingsViewModel;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -46,6 +47,7 @@ public class GameAIFragment extends Fragment {
 
     private boolean gameActive;
     private GameAIViewModel gameAIViewModel;
+    private SettingsViewModel settingsViewModel;
 
     @Nullable
     @Override
@@ -64,6 +66,7 @@ public class GameAIFragment extends Fragment {
         player2 = new UserProfile("AI");
 
         gameAIViewModel = new ViewModelProvider(requireActivity()).get(GameAIViewModel.class);
+        settingsViewModel = new ViewModelProvider(requireActivity()).get(SettingsViewModel.class);
 
         gameAIViewModel.getPlayer1Moves().observe(getViewLifecycleOwner(), moves -> {
             if (moves != null) {
@@ -92,7 +95,16 @@ public class GameAIFragment extends Fragment {
             startNewGame();
         }
 
-        initialiseGrid();
+        // Retrieve grid size from SettingsViewModel
+        settingsViewModel.getNumRows().observe(getViewLifecycleOwner(), numRows -> {
+            rows = numRows;
+            settingsViewModel.getNumColumns().observe(getViewLifecycleOwner(), numColumns -> {
+                columns = numColumns;
+                // After getting grid size, initialize the game
+                startNewGame();
+                initialiseGrid();
+            });
+        });
 
         btnBack.setOnClickListener(v -> {
             NavController navController = NavHostFragment.findNavController(this);
@@ -109,6 +121,8 @@ public class GameAIFragment extends Fragment {
     }
 
     private void startNewGame() {
+        gameAIViewModel.initializeMovesLeft(rows * columns);
+
         board = new String[rows][columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {

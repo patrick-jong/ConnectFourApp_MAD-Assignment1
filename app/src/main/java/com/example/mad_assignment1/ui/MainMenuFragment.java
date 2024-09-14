@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 // Import necessary classes
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,24 +24,23 @@ public class MainMenuFragment extends Fragment {
 
     private ProfileViewModel profileViewModel;
     private TextView usernameTextView;
+    private ImageView avatarImageView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // Inflate the main menu layout
         View view = inflater.inflate(R.layout.fragment_main_menu, container, false);
-
-        // Initialize the ProfileViewModel
         profileViewModel = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
 
-        // Initialize the username TextView
         usernameTextView = view.findViewById(R.id.username);
+        avatarImageView = view.findViewById(R.id.user_icon);
 
         // Observe the current user profile and update the TextView
         profileViewModel.getCurrentUserProfile().observe(getViewLifecycleOwner(), userProfile -> {
             if (userProfile != null) {
                 usernameTextView.setText(userProfile.getName());
+                avatarImageView.setImageResource(userProfile.getAvatar());
             }
         });
 

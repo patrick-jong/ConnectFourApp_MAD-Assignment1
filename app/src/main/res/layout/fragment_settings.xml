@@ -54,19 +54,19 @@
             android:id="@+id/rb_standard_grid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Standard (7x6)"/>
+            android:text="Standard (6x7)"/>
 
         <RadioButton
             android:id="@+id/rb_small_grid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Small (6x5)"/>
+            android:text="Small (5x6)"/>
 
         <RadioButton
             android:id="@+id/rb_large_grid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Large (8x7)"/>
+            android:text="Large (7x8)"/>
     </RadioGroup>
 
     <Button
