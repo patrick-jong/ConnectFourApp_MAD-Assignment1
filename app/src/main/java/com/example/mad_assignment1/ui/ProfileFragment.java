@@ -36,7 +36,7 @@ public class ProfileFragment extends Fragment {
         btnBack = view.findViewById(R.id.btn_back);
 
         // Initialize profile and adapter
-        userProfile = new UserProfile();
+        // userProfile = new UserProfile(); TODO: get the current user
         AvatarAdapter avatarAdapter = new AvatarAdapter(getContext(), userProfile.getAvailableAvatars());
         avatarRecyclerView.setAdapter(avatarAdapter);
 
