@@ -1,19 +1,18 @@
 package com.example.mad_assignment1.statistics;
 
 public class GameStatistics {
-
-    private int totalGamesPlayed;
+    private int gamesPlayed;
     private int wins;
     private int losses;
 
     public GameStatistics() {
-        totalGamesPlayed = 0;
-        wins = 0;
-        losses = 0;
+        this.gamesPlayed = 0;
+        this.wins = 0;
+        this.losses = 0;
     }
 
     public void incrementGamesPlayed() {
-        totalGamesPlayed++;
+        gamesPlayed++;
     }
 
     public void incrementWins() {
@@ -24,7 +23,20 @@ public class GameStatistics {
         losses++;
     }
 
-    public String getStatisticsSummary() {
-        return "Games Played: " + totalGamesPlayed + "\nWins: " + wins + "\nLosses: " + losses;
+    public int getGamesPlayed() {
+        return gamesPlayed;
+    }
+
+    public int getWins() {
+        return wins;
+    }
+
+    public int getLosses() {
+        return losses;
+    }
+
+    public double getWinPercentage() {
+        if (gamesPlayed == 0) return 0;
+        return (double) wins / gamesPlayed * 100;
     }
 }

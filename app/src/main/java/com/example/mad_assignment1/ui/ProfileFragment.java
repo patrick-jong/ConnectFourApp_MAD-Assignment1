@@ -37,13 +37,13 @@ public class ProfileFragment extends Fragment {
 
         // Initialize profile and adapter
         // userProfile = new UserProfile(); TODO: get the current user
-        AvatarAdapter avatarAdapter = new AvatarAdapter(getContext(), userProfile.getAvailableAvatars());
-        avatarRecyclerView.setAdapter(avatarAdapter);
+        //AvatarAdapter avatarAdapter = new AvatarAdapter(getContext(), userProfile.getAvailableAvatars());
+        //avatarRecyclerView.setAdapter(avatarAdapter);
 
         // Safe Profile Button
         saveProfileButton.setOnClickListener(v -> {
             // Save user profile logic
-            userProfile.setName(playerNameInput.getText().toString());
+            //userProfile.setName(playerNameInput.getText().toString());
             // TODO: Save avatar selection, etc.
         });
 

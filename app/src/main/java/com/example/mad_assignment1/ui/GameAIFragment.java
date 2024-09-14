@@ -22,6 +22,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.mad_assignment1.R;
 import com.example.mad_assignment1.profile.UserProfile;
 import com.example.mad_assignment1.viewmodel.GameAIViewModel;
+import com.example.mad_assignment1.viewmodel.ProfileViewModel;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -224,7 +225,13 @@ public class GameAIFragment extends Fragment {
                     gameActive = false;
                     gameAIViewModel.setGameActive(false);
                     gameAIViewModel.setPlayerTurnIndicator(currentPlayer.getName() + " wins!");
+                    if(currentPlayer.getName().equals("AI")) {
+                        endGame("Loss");
+                    } else {
+                        endGame("Win");
+                    }
                 } else if (isBoardFull()) {
+                    endGame("Draw");
                     Toast.makeText(getContext(), "It's a draw!", Toast.LENGTH_LONG).show();
                     gameActive = false;
                     gameAIViewModel.setGameActive(false);
@@ -308,6 +315,12 @@ public class GameAIFragment extends Fragment {
 
         return count;
     }
+
+    private void endGame(String winStatus) {
+        ProfileViewModel profileViewModel = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
+        profileViewModel.updateStats(winStatus);
+    }
+
 
     private void updateUI() {
         if (gameActive) {
