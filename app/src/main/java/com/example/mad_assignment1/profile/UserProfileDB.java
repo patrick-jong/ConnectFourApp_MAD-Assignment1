@@ -11,7 +11,6 @@ public class UserProfileDB {
     private final List<UserProfile> userProfiles;
 
     public UserProfileDB() {
-        // Initialize the list of user profiles
         userProfiles = new ArrayList<>();
 
         // Add default guest profile

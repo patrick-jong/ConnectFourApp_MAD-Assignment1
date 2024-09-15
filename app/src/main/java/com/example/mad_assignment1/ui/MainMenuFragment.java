@@ -36,6 +36,7 @@ public class MainMenuFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main_menu, container, false);
         profileViewModel = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
 
+        // Initialise UI components
         usernameTextView = view.findViewById(R.id.username);
         avatarImageView = view.findViewById(R.id.user_icon);
 

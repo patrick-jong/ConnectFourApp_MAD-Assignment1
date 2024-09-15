@@ -73,6 +73,17 @@ public class GameFragment extends Fragment {
         // Observe ViewModel data to update UI
         observeViewModel();
 
+        // Retrieve grid size from SettingsViewModel
+        settingsViewModel.getNumRows().observe(getViewLifecycleOwner(), numRows -> {
+            rows = numRows;
+            settingsViewModel.getNumColumns().observe(getViewLifecycleOwner(), numColumns -> {
+                columns = numColumns;
+                // Start a new game and initialize grid with new settings
+                startNewGame();
+                initialiseGrid();
+            });
+        });
+
         // Set up the game state or start a new game if no state exists
         if (gameViewModel.getBoard().getValue() != null) {
             board = gameViewModel.getBoard().getValue();
@@ -83,15 +94,6 @@ public class GameFragment extends Fragment {
         } else {
             startNewGame();
         }
-
-        // Retrieve grid size from SettingsViewModel
-        settingsViewModel.getNumRows().observe(getViewLifecycleOwner(), numRows -> {
-            rows = numRows;
-            settingsViewModel.getNumColumns().observe(getViewLifecycleOwner(), numColumns -> {
-                columns = numColumns;
-                initialiseGrid();
-            });
-        });
 
         // Back button listener
         btnBack.setOnClickListener(v -> {
@@ -168,6 +170,8 @@ public class GameFragment extends Fragment {
         player1MovesView.setText(player1.getName() + " Moves: 0");
         player2MovesView.setText(player2.getName() + " Moves: 0");
         movesLeftView.setText("Moves Left: " + (rows * columns));
+
+        initialiseGrid(); // Ensure the grid is initialized with the new settings
     }
 
     private void initialiseGrid() {
@@ -246,7 +250,7 @@ public class GameFragment extends Fragment {
                 }
 
                 Integer movesLeftValue = gameViewModel.getMovesLeft().getValue();
-                int movesLeft = (movesLeftValue != null ? movesLeftValue : 42) - 1; // Example default value
+                int movesLeft = (movesLeftValue != null ? movesLeftValue : (rows * columns)) - 1;
                 gameViewModel.setMovesLeft(movesLeft);
 
                 if (checkWin(row, column)) {

@@ -65,6 +65,7 @@ public class StatisticsFragment extends Fragment {
         return view;
     }
 
+    // Methods
     private void showResetConfirmationDialog() {
         new AlertDialog.Builder(getContext())
                 .setTitle("Reset Statistics")

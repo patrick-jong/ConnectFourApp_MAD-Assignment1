@@ -76,6 +76,17 @@ public class GameAIFragment extends Fragment {
         // Observe ViewModel data to update UI
         observeViewModel();
 
+        // Retrieve grid size from SettingsViewModel
+        settingsViewModel.getNumRows().observe(getViewLifecycleOwner(), numRows -> {
+            rows = numRows;
+            settingsViewModel.getNumColumns().observe(getViewLifecycleOwner(), numColumns -> {
+                columns = numColumns;
+                // Start a new game and initialize grid with new settings
+                startNewGame();
+                initialiseGrid();
+            });
+        });
+
         // Set up the game state or start a new game if no state exists
         if (gameAIViewModel.getBoard().getValue() != null) {
             board = gameAIViewModel.getBoard().getValue();
@@ -86,15 +97,6 @@ public class GameAIFragment extends Fragment {
         } else {
             startNewGame();
         }
-
-        // Retrieve grid size from SettingsViewModel
-        settingsViewModel.getNumRows().observe(getViewLifecycleOwner(), numRows -> {
-            rows = numRows;
-            settingsViewModel.getNumColumns().observe(getViewLifecycleOwner(), numColumns -> {
-                columns = numColumns;
-                initialiseGrid();
-            });
-        });
 
         // Back button listener
         btnBack.setOnClickListener(v -> {
@@ -112,6 +114,7 @@ public class GameAIFragment extends Fragment {
         return view;
     }
 
+    // Methods
     private void observeViewModel() {
         gameAIViewModel.getPlayer1Moves().observe(getViewLifecycleOwner(), moves -> {
             if (moves != null) {
@@ -169,10 +172,11 @@ public class GameAIFragment extends Fragment {
         // Reset moves left to the initial number of moves
         gameAIViewModel.setMovesLeft(rows * columns);
 
-        // Optionally, you may want to update the UI elements showing move counts and moves left
         player1MovesView.setText(player1.getName() + " Moves: 0");
         player2MovesView.setText(player2.getName() + " Moves: 0");
         movesLeftView.setText("Moves Left: " + (rows * columns));
+
+        initialiseGrid(); // Ensure the grid is initialized with the new settings
     }
 
     private void initialiseGrid() {
@@ -255,7 +259,7 @@ public class GameAIFragment extends Fragment {
                 }
 
                 Integer movesLeftValue = gameAIViewModel.getMovesLeft().getValue();
-                int movesLeft = (movesLeftValue != null ? movesLeftValue : 42) - 1; // Example default value
+                int movesLeft = (movesLeftValue != null ? movesLeftValue : rows * columns) - 1;
                 gameAIViewModel.setMovesLeft(movesLeft);
 
                 if (checkWin(row, column)) {
