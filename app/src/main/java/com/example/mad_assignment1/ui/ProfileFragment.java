@@ -1,4 +1,4 @@
-// Class: Profile Fragment
+// Class: ProfileFragment.java
 // Description: Profile fragment which handles username and avatar selection
 
 package com.example.mad_assignment1.ui;
@@ -33,6 +33,8 @@ public class ProfileFragment extends Fragment {
     private RecyclerView avatarRecyclerView;
     private AvatarAdapter avatarAdapter;
     private Button btnBack;
+    private Button btnSave;
+    private Button btnLogIn;
     private int selectedAvatarResourceId; // Temporary storage for selected avatar
 
     @Nullable
@@ -44,6 +46,9 @@ public class ProfileFragment extends Fragment {
         // Initialize UI components
         playerNameInput = view.findViewById(R.id.et_player_name);
         avatarRecyclerView = view.findViewById(R.id.avatar_recycler_view);
+
+        btnSave = view.findViewById(R.id.btn_save_profile);
+        btnLogIn = view.findViewById(R.id.btn_login_profile);
         btnBack = view.findViewById(R.id.btn_back);
 
         // Initialize ProfileViewModel
@@ -63,18 +68,48 @@ public class ProfileFragment extends Fragment {
         // Set up the avatar RecyclerView
         setupAvatarRecyclerView();
 
+        // Handle Log In Button
+        btnLogIn.setOnClickListener(v -> {
+            String inUserName = playerNameInput.getText().toString().trim();
+            if (!inUserName.isEmpty()) {
+                UserProfile existingProfile = profileViewModel.getProfileByName(inUserName);
+                if (existingProfile != null) {
+                    if (!existingProfile.equals(profileViewModel.getCurrentUserProfile().getValue())) {
+                        profileViewModel.setCurrentUserProfile(existingProfile);
+                        Toast.makeText(getContext(), "Logged in as " + inUserName, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), "Already logged into this profile.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "Profile does not exist. Select \"Save Profile\" to create a new profile", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getContext(), "Please enter a profile name.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         // Handle Save Profile button click
-        view.findViewById(R.id.btn_save_profile).setOnClickListener(v -> {
+        btnSave.setOnClickListener(v -> {
             String newName = playerNameInput.getText().toString().trim();
             if (!newName.isEmpty()) {
-                if (profileViewModel.isProfileNameUnique(newName) || newName.equals(userProfile.getName())) {
-                    // Update userProfile with the new name and selected avatar
-                    userProfile.setName(newName);
-                    userProfile.setAvatar(selectedAvatarResourceId);
-                    profileViewModel.setCurrentUserProfile(userProfile);
-                    Toast.makeText(getContext(), "Profile updated.", Toast.LENGTH_SHORT).show();
-                } else {
+                UserProfile existingProfile = profileViewModel.getProfileByName(newName);
+                if (existingProfile != null && !newName.equals(userProfile.getName())) {
                     Toast.makeText(getContext(), "Profile name already exists.", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (existingProfile == null) {
+                        // Create a new profile
+                        UserProfile newProfile = new UserProfile(newName);
+                        newProfile.setAvatar(selectedAvatarResourceId);
+                        profileViewModel.addProfile(newProfile);
+                        profileViewModel.setCurrentUserProfile(newProfile);
+                        Toast.makeText(getContext(), "Profile created and logged in as " + newName, Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Update existing profile
+                        existingProfile.setAvatar(selectedAvatarResourceId);
+                        profileViewModel.updateProfile(existingProfile);
+                        profileViewModel.setCurrentUserProfile(existingProfile);
+                        Toast.makeText(getContext(), "Profile updated.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             } else {
                 Toast.makeText(getContext(), "Please enter a profile name.", Toast.LENGTH_SHORT).show();

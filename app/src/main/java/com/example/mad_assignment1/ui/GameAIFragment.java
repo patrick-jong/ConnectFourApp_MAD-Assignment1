@@ -73,29 +73,16 @@ public class GameAIFragment extends Fragment {
         gameAIViewModel = new ViewModelProvider(requireActivity()).get(GameAIViewModel.class);
         settingsViewModel = new ViewModelProvider(requireActivity()).get(SettingsViewModel.class);
 
-        gameAIViewModel.getPlayer1Moves().observe(getViewLifecycleOwner(), moves -> {
-            if (moves != null) {
-                player1MovesView.setText(player1.getName() + " Moves: " + moves);
-            }
-        });
+        // Observe ViewModel data to update UI
+        observeViewModel();
 
-        gameAIViewModel.getPlayer2Moves().observe(getViewLifecycleOwner(), moves -> {
-            if (moves != null) {
-                player2MovesView.setText(player2.getName() + " Moves: " + moves);
-            }
-        });
-
-        gameAIViewModel.getMovesLeft().observe(getViewLifecycleOwner(), moves -> {
-            if (moves != null) {
-                movesLeftView.setText("Moves Left: " + moves);
-            }
-        });
-
+        // Set up the game state or start a new game if no state exists
         if (gameAIViewModel.getBoard().getValue() != null) {
             board = gameAIViewModel.getBoard().getValue();
             currentPlayer = gameAIViewModel.getCurrentPlayer().getValue();
             gameActive = gameAIViewModel.getGameActive().getValue();
             playerTurnIndicator.setText(gameAIViewModel.getPlayerTurnIndicator().getValue());
+            initialiseGrid(); // Set up the grid with existing state
         } else {
             startNewGame();
         }
@@ -105,7 +92,6 @@ public class GameAIFragment extends Fragment {
             rows = numRows;
             settingsViewModel.getNumColumns().observe(getViewLifecycleOwner(), numColumns -> {
                 columns = numColumns;
-                startNewGame();
                 initialiseGrid();
             });
         });
@@ -124,6 +110,37 @@ public class GameAIFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void observeViewModel() {
+        gameAIViewModel.getPlayer1Moves().observe(getViewLifecycleOwner(), moves -> {
+            if (moves != null) {
+                player1MovesView.setText(player1.getName() + " Moves: " + moves);
+            }
+        });
+
+        gameAIViewModel.getPlayer2Moves().observe(getViewLifecycleOwner(), moves -> {
+            if (moves != null) {
+                player2MovesView.setText(player2.getName() + " Moves: " + moves);
+            }
+        });
+
+        gameAIViewModel.getMovesLeft().observe(getViewLifecycleOwner(), moves -> {
+            if (moves != null) {
+                movesLeftView.setText("Moves Left: " + moves);
+            }
+        });
+
+        gameAIViewModel.getCurrentPlayer().observe(getViewLifecycleOwner(), player -> {
+            currentPlayer = player;
+            if (gameActive) {
+                playerTurnIndicator.setText(currentPlayer.getName() + "'s Turn");
+            }
+        });
+
+        gameAIViewModel.getGameActive().observe(getViewLifecycleOwner(), isActive -> {
+            gameActive = isActive;
+        });
     }
 
     private void startNewGame() {
@@ -150,7 +167,7 @@ public class GameAIFragment extends Fragment {
         gameAIViewModel.setPlayer2Moves(0);
 
         // Reset moves left to the initial number of moves
-        gameAIViewModel.setMovesLeft(rows * columns); // Assuming movesLeft is the total number of moves available
+        gameAIViewModel.setMovesLeft(rows * columns);
 
         // Optionally, you may want to update the UI elements showing move counts and moves left
         player1MovesView.setText(player1.getName() + " Moves: 0");
@@ -246,7 +263,7 @@ public class GameAIFragment extends Fragment {
                     gameActive = false;
                     gameAIViewModel.setGameActive(false);
                     gameAIViewModel.setPlayerTurnIndicator(currentPlayer.getName() + " wins!");
-                    if(currentPlayer.getName().equals("AI")) {
+                    if (currentPlayer.getName().equals("AI")) {
                         endGame("Loss");
                     } else {
                         endGame("Win");
@@ -341,7 +358,6 @@ public class GameAIFragment extends Fragment {
         ProfileViewModel profileViewModel = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
         profileViewModel.updateStats(winStatus);
     }
-
 
     private void updateUI() {
         if (gameActive) {

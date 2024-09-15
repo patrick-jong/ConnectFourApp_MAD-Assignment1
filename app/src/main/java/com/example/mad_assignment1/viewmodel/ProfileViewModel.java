@@ -1,5 +1,5 @@
-// Class: ProfileViewModel
-// Description: Holds data from the GameAIFragment
+// Class: ProfileViewModel.java
+// Description: ViewModel that manages the state of UserProfileDB and handles user profile operations.
 
 package com.example.mad_assignment1.viewmodel;
 
@@ -8,34 +8,29 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.mad_assignment1.profile.UserProfile;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.example.mad_assignment1.profile.UserProfileDB;
 
 public class ProfileViewModel extends ViewModel {
-    // List of all user profiles
-    private final MutableLiveData<List<UserProfile>> userProfiles;
+    // LiveData holding the UserProfileDB instance
+    private final MutableLiveData<UserProfileDB> userProfileDBLiveData;
 
     // Currently selected user profile
     private final MutableLiveData<UserProfile> currentUserProfile;
 
     public ProfileViewModel() {
-        // Initialize the list of user profiles
-        userProfiles = new MutableLiveData<>(new ArrayList<>());
+        // Initialize the UserProfileDB
+        UserProfileDB userProfileDB = new UserProfileDB();
 
-        // Initialize the default "Guest" profile
-        UserProfile guestProfile = new UserProfile("Guest");
-
-        // Add the guest profile to the list
-        userProfiles.getValue().add(guestProfile);
+        // Initialize the LiveData with UserProfileDB
+        userProfileDBLiveData = new MutableLiveData<>(userProfileDB);
 
         // Set the guest profile as the current user profile
-        currentUserProfile = new MutableLiveData<>(guestProfile);
+        currentUserProfile = new MutableLiveData<>(userProfileDB.getProfileByName("Guest"));
     }
 
-    // Get the list of user profiles
-    public LiveData<List<UserProfile>> getUserProfiles() {
-        return userProfiles;
+    // Get the LiveData containing UserProfileDB
+    public LiveData<UserProfileDB> getUserProfileDB() {
+        return userProfileDBLiveData;
     }
 
     // Get the currently selected user profile
@@ -50,51 +45,37 @@ public class ProfileViewModel extends ViewModel {
         }
     }
 
-    // Add a new user profile and set it as current
-    public void addUserProfile(UserProfile profile) {
-        if (profile != null) {
-            List<UserProfile> profiles = userProfiles.getValue();
-            profiles.add(profile);
-            userProfiles.setValue(profiles); // Update the LiveData
-            setCurrentUserProfile(profile);
+    // Add a new user profile
+    public void addProfile(UserProfile profile) {
+        UserProfileDB db = userProfileDBLiveData.getValue();
+        if (db != null) {
+            db.addProfile(profile);
+            userProfileDBLiveData.setValue(db); // Update LiveData to reflect the changes
+        }
+    }
+
+    // Update an existing user profile
+    public void updateProfile(UserProfile updatedProfile) {
+        UserProfileDB db = userProfileDBLiveData.getValue();
+        if (db != null) {
+            db.updateProfile(updatedProfile);
+            userProfileDBLiveData.setValue(db); // Update LiveData to reflect the changes
         }
     }
 
     // Check if a profile name is unique
     public boolean isProfileNameUnique(String name) {
-        for (UserProfile profile : userProfiles.getValue()) {
-            if (profile.getName().equals(name)) {
-                return false;
-            }
-        }
-        return true;
+        UserProfileDB db = userProfileDBLiveData.getValue();
+        return db != null && db.isProfileNameUnique(name);
+    }
+
+    // Get a profile by its name
+    public UserProfile getProfileByName(String name) {
+        UserProfileDB db = userProfileDBLiveData.getValue();
+        return db != null ? db.getProfileByName(name) : null;
     }
 
     // Methods to update statistics on the current user profile
-    public void incrementWins() {
-        UserProfile profile = currentUserProfile.getValue();
-        if (profile != null) {
-            profile.incrementWins();
-            currentUserProfile.setValue(profile);
-        }
-    }
-
-    public void incrementLosses() {
-        UserProfile profile = currentUserProfile.getValue();
-        if (profile != null) {
-            profile.incrementLosses();
-            currentUserProfile.setValue(profile);
-        }
-    }
-
-    public void incrementGamesPlayed() {
-        UserProfile profile = currentUserProfile.getValue();
-        if (profile != null) {
-            profile.incrementGamesPlayed();
-            currentUserProfile.setValue(profile);
-        }
-    }
-
     public void updateStats(String status) {
         UserProfile profile = currentUserProfile.getValue();
         if (profile != null) {
@@ -104,6 +85,33 @@ public class ProfileViewModel extends ViewModel {
                 profile.incrementLosses();
             }
             // Increment games played for any result
+            profile.incrementGamesPlayed();
+            currentUserProfile.setValue(profile);
+        }
+    }
+
+    // Increment wins for the current profile
+    public void incrementWins() {
+        UserProfile profile = currentUserProfile.getValue();
+        if (profile != null) {
+            profile.incrementWins();
+            currentUserProfile.setValue(profile);
+        }
+    }
+
+    // Increment losses for the current profile
+    public void incrementLosses() {
+        UserProfile profile = currentUserProfile.getValue();
+        if (profile != null) {
+            profile.incrementLosses();
+            currentUserProfile.setValue(profile);
+        }
+    }
+
+    // Increment games played for the current profile
+    public void incrementGamesPlayed() {
+        UserProfile profile = currentUserProfile.getValue();
+        if (profile != null) {
             profile.incrementGamesPlayed();
             currentUserProfile.setValue(profile);
         }
@@ -130,10 +138,14 @@ public class ProfileViewModel extends ViewModel {
         return profile != null ? profile.getWinPercentage() : 0;
     }
 
+    // Reset statistics for the current profile
     public void resetStatistics() {
         UserProfile profile = currentUserProfile.getValue();
-        profile.setWins(0);
-        profile.setLosses(0);
-        profile.setGamesPlayed(0);
+        if (profile != null) {
+            profile.setWins(0);
+            profile.setLosses(0);
+            profile.setGamesPlayed(0);
+            currentUserProfile.setValue(profile);
+        }
     }
 }

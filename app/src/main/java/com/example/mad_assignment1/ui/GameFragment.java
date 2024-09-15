@@ -70,29 +70,16 @@ public class GameFragment extends Fragment {
         gameViewModel = new ViewModelProvider(requireActivity()).get(GameViewModel.class);
         settingsViewModel = new ViewModelProvider(requireActivity()).get(SettingsViewModel.class);
 
-        gameViewModel.getPlayer1Moves().observe(getViewLifecycleOwner(), moves -> {
-            if (moves != null) {
-                player1MovesView.setText(player1.getName() + " Moves: " + moves);
-            }
-        });
+        // Observe ViewModel data to update UI
+        observeViewModel();
 
-        gameViewModel.getPlayer2Moves().observe(getViewLifecycleOwner(), moves -> {
-            if (moves != null) {
-                player2MovesView.setText(player2.getName() + " Moves: " + moves);
-            }
-        });
-
-        gameViewModel.getMovesLeft().observe(getViewLifecycleOwner(), moves -> {
-            if (moves != null) {
-                movesLeftView.setText("Moves Left: " + moves);
-            }
-        });
-
+        // Set up the game state or start a new game if no state exists
         if (gameViewModel.getBoard().getValue() != null) {
             board = gameViewModel.getBoard().getValue();
             currentPlayer = gameViewModel.getCurrentPlayer().getValue();
             gameActive = gameViewModel.getGameActive().getValue();
             playerTurnIndicator.setText(gameViewModel.getPlayerTurnIndicator().getValue());
+            initialiseGrid(); // Set up the grid with existing state
         } else {
             startNewGame();
         }
@@ -102,7 +89,6 @@ public class GameFragment extends Fragment {
             rows = numRows;
             settingsViewModel.getNumColumns().observe(getViewLifecycleOwner(), numColumns -> {
                 columns = numColumns;
-                startNewGame();
                 initialiseGrid();
             });
         });
@@ -121,6 +107,37 @@ public class GameFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void observeViewModel() {
+        gameViewModel.getPlayer1Moves().observe(getViewLifecycleOwner(), moves -> {
+            if (moves != null) {
+                player1MovesView.setText(player1.getName() + " Moves: " + moves);
+            }
+        });
+
+        gameViewModel.getPlayer2Moves().observe(getViewLifecycleOwner(), moves -> {
+            if (moves != null) {
+                player2MovesView.setText(player2.getName() + " Moves: " + moves);
+            }
+        });
+
+        gameViewModel.getMovesLeft().observe(getViewLifecycleOwner(), moves -> {
+            if (moves != null) {
+                movesLeftView.setText("Moves Left: " + moves);
+            }
+        });
+
+        gameViewModel.getCurrentPlayer().observe(getViewLifecycleOwner(), player -> {
+            currentPlayer = player;
+            if (gameActive) {
+                playerTurnIndicator.setText(currentPlayer.getName() + "'s Turn");
+            }
+        });
+
+        gameViewModel.getGameActive().observe(getViewLifecycleOwner(), isActive -> {
+            gameActive = isActive;
+        });
     }
 
     private void startNewGame() {
@@ -258,7 +275,6 @@ public class GameFragment extends Fragment {
         currentPlayer = currentPlayer.equals(player1) ? player2 : player1;
         gameViewModel.setCurrentPlayer(currentPlayer);
     }
-
 
     private boolean isBoardFull() {
         for (int i = 0; i < columns; i++) {
