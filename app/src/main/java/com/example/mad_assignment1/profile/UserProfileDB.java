@@ -25,14 +25,12 @@ public class UserProfileDB {
         return userProfiles;
     }
 
-    // Add a new user profile
     public void addProfile(UserProfile profile) {
         if (profile != null && isProfileNameUnique(profile.getName())) {
             userProfiles.add(profile);
         }
     }
 
-    // Get a profile by its name
     public UserProfile getProfileByName(String name) {
         for (UserProfile profile : userProfiles) {
             if (profile.getName().equals(name)) {
@@ -42,7 +40,6 @@ public class UserProfileDB {
         return null;
     }
 
-    // Update an existing user profile
     public void updateProfile(UserProfile updatedProfile) {
         if (updatedProfile != null) {
             for (int i = 0; i < userProfiles.size(); i++) {
@@ -54,7 +51,6 @@ public class UserProfileDB {
         }
     }
 
-    // Check if a profile name is unique
     public boolean isProfileNameUnique(String name) {
         for (UserProfile profile : userProfiles) {
             if (profile.getName().equals(name)) {
