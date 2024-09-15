@@ -140,7 +140,7 @@ public class GameFragment extends Fragment {
         gameViewModel.setPlayer2Moves(0);
 
         // Reset moves left to the initial number of moves
-        gameViewModel.setMovesLeft(rows * columns); // Assuming movesLeft is the total number of moves available
+        gameViewModel.setMovesLeft(rows * columns);
 
         player1MovesView.setText(player1.getName() + " Moves: 0");
         player2MovesView.setText(player2.getName() + " Moves: 0");
@@ -166,6 +166,7 @@ public class GameFragment extends Fragment {
 
                 int row = position / columns;
                 int col = position % columns;
+
                 String disc = board[row][col];
 
                 if (disc.equals(player1.getName())) {
@@ -180,6 +181,7 @@ public class GameFragment extends Fragment {
             }
         };
 
+        gameGrid.setNumColumns(columns);
         gameGrid.setAdapter(gridAdapter);
 
         gameGrid.setOnItemClickListener((parent, view, position, id) -> {

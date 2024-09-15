@@ -172,6 +172,7 @@ public class GameAIFragment extends Fragment {
 
                 int row = position / columns;
                 int col = position % columns;
+
                 String disc = board[row][col];
 
                 if (disc.equals(player1.getName())) {
@@ -186,6 +187,7 @@ public class GameAIFragment extends Fragment {
             }
         };
 
+        gameGrid.setNumColumns(columns);
         gameGrid.setAdapter(gridAdapter);
 
         gameGrid.setOnItemClickListener((parent, view, position, id) -> {
