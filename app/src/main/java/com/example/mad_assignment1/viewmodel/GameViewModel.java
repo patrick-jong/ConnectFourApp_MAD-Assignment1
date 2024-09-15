@@ -1,3 +1,6 @@
+// Class: GameViewModel
+// Description: Holds data from the GameFragment (2 player)
+
 package com.example.mad_assignment1.viewmodel;
 
 import androidx.lifecycle.LiveData;

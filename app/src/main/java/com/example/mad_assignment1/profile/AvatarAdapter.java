@@ -1,3 +1,6 @@
+// Class: AvatarAdapter Class
+// Description: For holding avatars to be selected
+
 package com.example.mad_assignment1.profile;
 
 import android.content.Context;
@@ -15,7 +18,7 @@ import java.util.List;
 
 public class AvatarAdapter extends RecyclerView.Adapter<AvatarAdapter.ViewHolder> {
 
-    private final List<Integer> avatarList; // List of avatar resource IDs
+    private final List<Integer> avatarList;
     private final Context context;
     private OnAvatarSelectedListener listener;
     private int selectedAvatarResourceId;

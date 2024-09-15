@@ -1,3 +1,6 @@
+// Class: MainMenuFragment.java
+// Description: Fragment that loads main menu. Displays menu options, and user profile.
+
 package com.example.mad_assignment1.ui;
 
 import android.os.Bundle;
@@ -54,7 +57,7 @@ public class MainMenuFragment extends Fragment {
         // Navigation controller for fragment management
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
 
-        // Set up button click listeners to navigate to respective fragments
+        // Listeners to navigate to respective fragments
         btnTwoPlayer.setOnClickListener(v -> navController.navigate(R.id.action_mainMenuFragment_to_gameFragment));
         btnAiMode.setOnClickListener(v -> navController.navigate(R.id.action_mainMenuFragment_to_gameAIFragment));
         btnStatistics.setOnClickListener(v -> navController.navigate(R.id.action_mainMenuFragment_to_statisticsFragment));

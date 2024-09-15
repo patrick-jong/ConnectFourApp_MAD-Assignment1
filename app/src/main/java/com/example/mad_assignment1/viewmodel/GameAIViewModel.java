@@ -1,3 +1,6 @@
+// Class: GameAIViewModel
+// Description: Holds data from the GameAIFragment
+
 package com.example.mad_assignment1.viewmodel;
 
 import androidx.lifecycle.LiveData;

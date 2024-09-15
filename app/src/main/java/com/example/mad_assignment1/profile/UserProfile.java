@@ -1,3 +1,6 @@
+// Class: UserProfile
+// Description: UserProfile class, holding name, avatar and statistics for a user profile
+
 package com.example.mad_assignment1.profile;
 
 import android.os.Parcel;

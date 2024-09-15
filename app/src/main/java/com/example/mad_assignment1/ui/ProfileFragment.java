@@ -1,3 +1,6 @@
+// Class: Profile Fragment
+// Description: Profile fragment which handles username and avatar selection
+
 package com.example.mad_assignment1.ui;
 
 import android.os.Bundle;
@@ -88,20 +91,12 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupAvatarRecyclerView() {
-        // Use GridLayoutManager to display avatars in a grid
         avatarRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3)); // 3 columns
-
-        // Initialize the AvatarAdapter with the list of available avatars and the selected avatar
         avatarAdapter = new AvatarAdapter(getContext(), userProfile.getAvailableAvatars(), selectedAvatarResourceId);
-
-        // Set the adapter to the RecyclerView
         avatarRecyclerView.setAdapter(avatarAdapter);
 
-        // Handle avatar selection
         avatarAdapter.setOnAvatarSelectedListener(avatarResourceId -> {
-            // Update the temporary selected avatar
             selectedAvatarResourceId = avatarResourceId;
-            // Update the adapter to reflect the selected avatar
             avatarAdapter.setSelectedAvatarResourceId(avatarResourceId);
         });
     }

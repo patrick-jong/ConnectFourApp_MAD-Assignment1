@@ -1,3 +1,6 @@
+// Class: Settings Fragment
+// Description: Settings fragment which handles the connect four board size
+
 package com.example.mad_assignment1.ui;
 
 import android.os.Bundle;

@@ -1,3 +1,6 @@
+// Class: MainActivity.java
+// Description: Loads up the MainActivity, which holds other fragments
+
 package com.example.mad_assignment1;
 
 import android.os.Bundle;

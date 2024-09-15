@@ -1,3 +1,6 @@
+// Class: GameAIFragment.java
+// Description: Fragment for handling player vs AI. Results are included in UserProfile statistics
+
 package com.example.mad_assignment1.ui;
 
 import android.os.Bundle;
@@ -54,6 +57,7 @@ public class GameAIFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_ai_game, container, false);
 
+        // Initialize UI components
         playerTurnIndicator = view.findViewById(R.id.player_turn_indicator);
         gameGrid = view.findViewById(R.id.game_grid);
         btnBack = view.findViewById(R.id.btn_back);
@@ -65,6 +69,7 @@ public class GameAIFragment extends Fragment {
         player1 = new UserProfile("Guest");
         player2 = new UserProfile("AI");
 
+        // ViewModel Classes
         gameAIViewModel = new ViewModelProvider(requireActivity()).get(GameAIViewModel.class);
         settingsViewModel = new ViewModelProvider(requireActivity()).get(SettingsViewModel.class);
 
@@ -100,17 +105,18 @@ public class GameAIFragment extends Fragment {
             rows = numRows;
             settingsViewModel.getNumColumns().observe(getViewLifecycleOwner(), numColumns -> {
                 columns = numColumns;
-                // After getting grid size, initialize the game
                 startNewGame();
                 initialiseGrid();
             });
         });
 
+        // Back button listener
         btnBack.setOnClickListener(v -> {
             NavController navController = NavHostFragment.findNavController(this);
             navController.navigate(R.id.action_gameAIFragment_to_mainMenuFragment);
         });
 
+        // Reset button listener
         btnReset.setOnClickListener(v -> {
             startNewGame();
             updateUI();
@@ -151,7 +157,6 @@ public class GameAIFragment extends Fragment {
         player2MovesView.setText(player2.getName() + " Moves: 0");
         movesLeftView.setText("Moves Left: " + (rows * columns));
     }
-
 
     private void initialiseGrid() {
         Integer[] initialGrid = new Integer[rows * columns];

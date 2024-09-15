@@ -1,3 +1,6 @@
+// Class: Statistics Fragment
+// Description: Fragment which handles statistics for the current selected user
+
 package com.example.mad_assignment1.ui;
 
 import android.app.AlertDialog;
@@ -37,6 +40,7 @@ public class StatisticsFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_statistics, container, false);
 
+        // Initialize UI components
         totalGamesPlayed = view.findViewById(R.id.tv_total_games);
         wins = view.findViewById(R.id.tv_wins);
         losses = view.findViewById(R.id.tv_losses);
@@ -45,8 +49,6 @@ public class StatisticsFragment extends Fragment {
         btnReset = view.findViewById(R.id.btn_reset);
 
         profileViewModel = new ViewModelProvider(requireActivity()).get(ProfileViewModel.class);
-
-        // Initialize statistics
         updateStatisticsDisplay();
 
         // Back button
@@ -57,7 +59,6 @@ public class StatisticsFragment extends Fragment {
 
         // Reset button
         btnReset.setOnClickListener(v -> {
-            // Show confirmation dialog
             showResetConfirmationDialog();
         });
 
